@@ -1,0 +1,65 @@
+Title,URL handle,Description,Vendor,Published on online store,Status,Image Src,Inventory quantity,Price,Price / International,Compare-at price,Tags
+tamil book 1,example-t-shirt,"<p>
+  <strong>Book Title:</strong> செகாவ் சிறுகதைகள் (Chekhov Sirukathaigal)<br>
+  <strong>Author:</strong>
+  <a href=""https://dodobooks.in/collections/anton-pavlovich-chekhov"" title=""anton-pavlovich-chekhov"">
+    ஆன்டன் செக்கோவ் (Anton Chekhov)
+  </a><br>
+  <strong>Publisher:</strong>
+  <a href=""https://dodobooks.in/collections/santhiya-pathipagam"" title=""santhiya-pathipagam"">
+    சந்தியா பதிப்பகம் (Sandhiya Pathippagam)
+  </a><br>
+  <strong>Year:</strong> 2021<br>
+  <strong>Category:</strong>
+  <a href=""https://dodobooks.in/collections/short-story"" title=""short-story"">
+    சிறுகதை, மொழிபெயர்ப்பு (Sirukathai, Mozhipeyarppu / Short Story, Translation)
+  </a><br>
+  <strong>Subject:</strong> பிற (Pirar / Others)<br>
+  <strong>No. of pages:</strong> -<br>
+  <strong>Language:</strong> தமிழ் (Tamil)<br>
+  <strong>Book format:</strong> Paperback<br>
+  <strong>ISBN:</strong> -
+</p>",Acme,TRUE,draft,https://samuvelraja.github.io/prodfilter/images/%E0%AE%85%E0%AE%AE%E0%AE%BE%E0%AE%A9%E0%AF%81%E0%AE%B7%E0%AF%8D%E0%AE%AF_%E0%AE%A8%E0%AE%BF%E0%AE%A9%E0%AF%88%E0%AE%B5%E0%AF%81%E0%AE%95%E0%AE%B3%E0%AF%8D.jpg,10,25,,,novel
+tamil book 2,tamil-book-2,"<p>
+  <strong>Book Title:</strong> செகாவ் சிறுகதைகள் (Chekhov Sirukathaigal)<br>
+  <strong>Author:</strong>
+  <a href=""https://dodobooks.in/collections/anton-pavlovich-chekhov"" title=""anton-pavlovich-chekhov"">
+    ஆன்டன் செக்கோவ் (Anton Chekhov)
+  </a><br>
+  <strong>Publisher:</strong>
+  <a href=""https://dodobooks.in/collections/santhiya-pathipagam"" title=""santhiya-pathipagam"">
+    சந்தியா பதிப்பகம் (Sandhiya Pathippagam)
+  </a><br>
+  <strong>Year:</strong> 2021<br>
+  <strong>Category:</strong>
+  <a href=""https://dodobooks.in/collections/short-story"" title=""short-story"">
+    சிறுகதை, மொழிபெயர்ப்பு (Sirukathai, Mozhipeyarppu / Short Story, Translation)
+  </a><br>
+  <strong>Subject:</strong> பிற (Pirar / Others)<br>
+  <strong>No. of pages:</strong> -<br>
+  <strong>Language:</strong> தமிழ் (Tamil)<br>
+  <strong>Book format:</strong> Paperback<br>
+  <strong>ISBN:</strong> -
+</p>",test,TRUE,draft,https://samuvelraja.github.io/prodfilter/images/%E0%AE%85%E0%AE%AE%E0%AF%88%E0%AE%A4%E0%AE%BF_%E0%AE%8E%E0%AE%A9%E0%AF%8D%E0%AE%AA%E0%AE%A4%E0%AF%81.jpeg,10,25,,,"novel, Her Stories"
+tamil book 2,tamil-book-2,,,,,https://samuvelraja.github.io/prodfilter/images/%E0%AE%85%E0%AE%AE%E0%AE%BE%E0%AE%A9%E0%AF%81%E0%AE%B7%E0%AF%8D%E0%AE%AF_%E0%AE%A8%E0%AE%BF%E0%AE%A9%E0%AF%88%E0%AE%B5%E0%AF%81%E0%AE%95%E0%AE%B3%E0%AF%8D.jpg,,,,,
+tamil book 3,tamil-book-3,"<p>
+  <strong>Book Title:</strong> செகாவ் சிறுகதைகள் (Chekhov Sirukathaigal)<br>
+  <strong>Author:</strong>
+  <a href=""https://dodobooks.in/collections/anton-pavlovich-chekhov"" title=""anton-pavlovich-chekhov"">
+    ஆன்டன் செக்கோவ் (Anton Chekhov)
+  </a><br>
+  <strong>Publisher:</strong>
+  <a href=""https://dodobooks.in/collections/santhiya-pathipagam"" title=""santhiya-pathipagam"">
+    சந்தியா பதிப்பகம் (Sandhiya Pathippagam)
+  </a><br>
+  <strong>Year:</strong> 2021<br>
+  <strong>Category:</strong>
+  <a href=""https://dodobooks.in/collections/short-story"" title=""short-story"">
+    சிறுகதை, மொழிபெயர்ப்பு (Sirukathai, Mozhipeyarppu / Short Story, Translation)
+  </a><br>
+  <strong>Subject:</strong> பிற (Pirar / Others)<br>
+  <strong>No. of pages:</strong> -<br>
+  <strong>Language:</strong> தமிழ் (Tamil)<br>
+  <strong>Book format:</strong> Paperback<br>
+  <strong>ISBN:</strong> -
+</p>",Acme,TRUE,draft,https://samuvelraja.github.io/prodfilter/images/%E0%AE%85%E0%AE%AE%E0%AE%BE%E0%AE%A9%E0%AF%81%E0%AE%B7%E0%AF%8D%E0%AE%AF_%E0%AE%A8%E0%AE%BF%E0%AE%A9%E0%AF%88%E0%AE%B5%E0%AF%81%E0%AE%95%E0%AE%B3%E0%AF%8D.jpg,10,25,,,"novel, Essay"

@@ -2,13 +2,18 @@ const fs = require('fs');
 const path = require('path');
 const sharp = require('sharp'); // You'll need to install this: npm install sharp
 
+// Configuration variables - set these instead of using command line arguments
+const inputDir = './imgcopy'; // Directory containing source images
+const outputDir = './upscaled'; // Directory to save processed images
+const scale = 8; // Scale factor for upscaling
+
 /**
- * Upscales and converts images in a directory to WebP format
+ * Upscales and converts images in a directory to WebP format with high quality
  * @param {string} inputDir - Directory containing images
  * @param {string} outputDir - Directory to save processed images
  * @param {number} scale - Scale factor for upscaling
  */
-async function processImages(inputDir, outputDir, scale = 2) {
+async function processImages(inputDir, outputDir, scale = 4) {
   // Create output directory if it doesn't exist
   if (!fs.existsSync(outputDir)) {
     fs.mkdirSync(outputDir, { recursive: true });
@@ -29,7 +34,9 @@ async function processImages(inputDir, outputDir, scale = 2) {
   for (const file of imageFiles) {
     try {
       const inputPath = path.join(inputDir, file);
-      const outputPath = path.join(outputDir, `${path.parse(file).name}.webp`);
+      const fileName = path.parse(file).name;
+      const fileExt = path.extname(file).toLowerCase().substring(1); // Get extension without the dot
+      const outputPath = path.join(outputDir, `${fileName}_${fileExt}.webp`);
       
       // Get image metadata
       const metadata = await sharp(inputPath).metadata();
@@ -38,13 +45,22 @@ async function processImages(inputDir, outputDir, scale = 2) {
       const newWidth = Math.round(metadata.width * scale);
       const newHeight = Math.round(metadata.height * scale);
       
-      // Process the image
+      // Process the image with high quality settings
       await sharp(inputPath)
-        .resize(newWidth, newHeight)
-        .webp({ quality: 80 }) // Adjust quality as needed
+        .resize({
+          width: newWidth,
+          height: newHeight,
+          fit: 'fill',
+          kernel: 'lanczos3' // Higher quality scaling algorithm
+        })
+        .webp({ 
+          quality: 100, // Maximum WebP quality
+          effort: 6,    // Maximum compression effort
+          lossless: false // Using lossy compression with high quality
+        })
         .toFile(outputPath);
       
-      console.log(`✓ Processed: ${file} → ${path.basename(outputPath)}`);
+      console.log(`✓ Processed: ${file} → ${path.basename(outputPath)} (${scale}x quality)`);
     } catch (error) {
       console.error(`✗ Error processing ${file}:`, error.message);
     }
@@ -53,12 +69,6 @@ async function processImages(inputDir, outputDir, scale = 2) {
   console.log('All processing complete!');
 }
 
-// Command line arguments
-const args = process.argv.slice(2);
-const inputDir = args[0] || '.'; // Default to current directory
-const outputDir = args[1] || './upscaled'; // Default output directory
-const scale = parseFloat(args[2]) || 2; // Default scale factor
-
-// Run the script
+// Run the script with the configured variables
 processImages(inputDir, outputDir, scale)
   .catch(err => console.error('Error:', err.message));
