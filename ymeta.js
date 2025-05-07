@@ -1,18 +1,19 @@
 const fs = require('fs');
-const path = require('path');
+const { parse } = require('json2csv');
 
-const folder = path.join(__dirname, 'upscaled');
-const baseUrl = 'https://samuvelraja.github.io/prodfilter/upscaled/';
+// Read JSON file
+const jsonData = JSON.parse(fs.readFileSync('result/missing.json', 'utf8'));
 
-fs.readdir(folder, (err, files) => {
-  if (err) {
-    console.error('Error reading folder:', err);
-    return;
-  }
-  const links = files
-    .filter(f => /\.(jpg|jpeg|png|gif|webp)$/i.test(f))
-    .map(f => baseUrl + encodeURIComponent(f))
-    .join('\n');
-  fs.writeFileSync('links.txt', links, 'utf8');
-  console.log('links.txt created with', files.length, 'files.');
-});
+// Encode 'Image Src' URLs so all are recognized as links in spreadsheets
+const updatedData = jsonData.map(item => ({
+  ...item,
+  "Image Src": item["Image Src"] ? encodeURI(item["Image Src"]) : ""
+}));
+
+// Convert to CSV
+const csv = parse(updatedData);
+
+// Write CSV file
+fs.writeFileSync('result/missing.csv', csv);
+
+console.log('CSV file created: result/missing.csv');
