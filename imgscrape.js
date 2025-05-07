@@ -79,55 +79,6 @@ async function saveImage(url, title) {
     }
 }
 
-async function scrape1(title) {
-    let browser;
-    try {
-        browser = await puppeteer.launch({
-            headless: "new",
-            args: ['--no-sandbox', '--disable-setuid-sandbox']
-        });
-        const page = await browser.newPage();
-        
-        // Set a realistic user agent
-        await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
-        
-        const url = `https://www.panuval.com/index.php?route=product/search&search=${encodeURIComponent(title)}`;
-        console.log(`Navigating to: ${url}`);
-        
-        // Navigate and wait for content to load
-        await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
-        
-        // Use evaluate for timeout instead of waitForTimeout
-        await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 2000)));
-        
-        // Extract data from the page
-        const result = await page.evaluate(() => {
-            const titleEl = document.querySelector('.main-products.product-grid .product-thumb .name a');
-            if (!titleEl) return null;
-            
-            const imgEl = document.querySelector('.main-products.product-grid .product-thumb .image img');
-            return {
-                title: titleEl.textContent.trim(),
-                imgUrl: imgEl ? imgEl.src : null
-            };
-        });
-        
-        if (!result) {
-            console.log(`No results found on site 1 for title: ${title}`);
-            return;
-        }
-        
-        console.log(`Found: "${result.title}" with image URL: ${result.imgUrl ? result.imgUrl.substring(0, 50) + '...' : 'None'}`);
-        if (result.imgUrl) {
-            await saveImage(result.imgUrl, result.title);
-        }
-        
-    } catch (e) {
-        console.error(`Error scraping site 1 for title: ${title}`, e);
-    } finally {
-        if (browser) await browser.close();
-    }
-}
 
 async function scrape2(title) {
     let browser;
@@ -238,8 +189,7 @@ function sleep(ms) {
 
 async function processBook(title) {
     console.log(`\n========== Processing book: ${title} ==========`);
-    await scrape1(title);
-    await sleep(2000);
+    
     await scrape2(title);
     await sleep(2000);
     await scrape3(title);
