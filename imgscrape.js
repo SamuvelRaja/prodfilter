@@ -11,24 +11,34 @@ if (!fs.existsSync(IMG_DIR)) {
     fs.mkdirSync(IMG_DIR);
 }
 
+// Helper to create subfolder for each source
+function getImgDir(source) {
+    const dir = path.join(IMG_DIR, source);
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    return dir;
+}
+
 function sanitizeFilename(name) {
     return name.replace(/[<>:"/\\|?*\x00-\x1F]/g, '').replace(/\s+/g, '_').slice(0, 100);
 }
 
-async function saveImage(url, title) {
+// Returns true if image saved, false otherwise
+async function saveImage(url, title, source) {
     if (!url || url.includes('no-image.jpg')) {
         console.log(`Skipping image for title: ${title} (Invalid or no image URL)`);
-        return;
+        return false;
     }
 
     try {
+        const imgDir = getImgDir(source);
+
         // Handle data URLs (base64)
         if (url.startsWith('data:image/')) {
             console.log(`Processing base64 image for: ${title}`);
             const matches = url.match(/^data:([A-Za-z-+/]+);base64,(.+)$/);
             if (!matches || matches.length !== 3) {
                 console.log(`Invalid data URL format for title: ${title}`);
-                return;
+                return false;
             }
             
             const mimeType = matches[1];
@@ -38,22 +48,22 @@ async function saveImage(url, title) {
             // Skip if image is very small (likely a placeholder)
             if (buffer.length < 200) {
                 console.log(`Skipping placeholder image for title: ${title}, size: ${buffer.length} bytes`);
-                return;
+                return false;
             }
             
             const ext = '.' + mimeType.split('/')[1];
             const filename = sanitizeFilename(title) + ext;
-            const filepath = path.join(IMG_DIR, filename);
+            const filepath = path.join(imgDir, filename);
             
             fs.writeFileSync(filepath, buffer);
             console.log(`Image saved (base64): ${filepath}, Size: ${buffer.length} bytes`);
-            return;
+            return true;
         }
 
         // Handle normal URLs
         const ext = path.extname(url).split('?')[0] || '.jpg';
         const filename = sanitizeFilename(title) + ext;
-        const filepath = path.join(IMG_DIR, filename);
+        const filepath = path.join(imgDir, filename);
         console.log(`Saving image for title: ${title} from URL: ${url}`);
         return axios({ 
             url, 
@@ -67,20 +77,26 @@ async function saveImage(url, title) {
             res.data.pipe(fs.createWriteStream(filepath))
                 .on('finish', () => {
                     console.log(`Image saved: ${filepath}`);
-                    resolve();
+                    resolve(true);
                 })
                 .on('error', err => {
                     console.error(`Error saving image for title: ${title}`, err);
-                    reject(err);
+                    reject(false);
                 });
         }))
+        .catch(err => {
+            console.error(`Failed to download image for title: ${title}`, err);
+            return false;
+        });
     } catch (err) {
         console.error(`Failed to process image for title: ${title}`, err);
+        return false;
     }
 }
+// ...existing code...
 
-
-async function scrape2(title) {
+// Scrape 1: CommonFolks
+async function scrape1(title) {
     let browser;
     try {
         browser = await puppeteer.launch({
@@ -96,14 +112,12 @@ async function scrape2(title) {
         
         await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
         
-        // Use evaluate for timeout instead of waitForTimeout
         await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 2000)));
         
         const result = await page.evaluate(() => {
             const titleEl = document.querySelector('.item h4 a');
             if (!titleEl) return null;
             
-            // Try to get background image URL from style
             let imgUrl = null;
             const imgDiv = document.querySelector('.product_list_img');
             if (imgDiv) {
@@ -119,23 +133,32 @@ async function scrape2(title) {
         });
         
         if (!result) {
-            console.log(`No results found on site 2 for title: ${title}`);
-            return;
+            console.log(`No results found on CommonFolks for title: ${title}`);
+            return false;
+        }
+
+        // If the image URL is a thumbnail, convert it to the full image URL
+        let fullImgUrl = result.imgUrl;
+        if (fullImgUrl && fullImgUrl.includes('/images/')) {
+            fullImgUrl = fullImgUrl.replace('/images/', '/images_full/');
         }
         
-        console.log(`Found: "${result.title}" with image URL: ${result.imgUrl ? result.imgUrl.substring(0, 50) + '...' : 'None'}`);
-        if (result.imgUrl) {
-            await saveImage(result.imgUrl, result.title);
+        console.log(`Found: "${result.title}" with image URL: ${fullImgUrl ? fullImgUrl.substring(0, 50) + '...' : 'None'}`);
+        if (fullImgUrl) {
+            const saved = await saveImage(fullImgUrl, result.title, 'commonfolks');
+            return saved;
         }
-        
+        return false;
     } catch (e) {
-        console.error(`Error scraping site 2 for title: ${title}`, e);
+        console.error(`Error scraping CommonFolks for title: ${title}`, e);
+        return false;
     } finally {
         if (browser) await browser.close();
     }
 }
 
-async function scrape3(title) {
+// Scrape 2: Nool Ulagam
+async function scrape2(title) {
     let browser;
     try {
         browser = await puppeteer.launch({
@@ -151,7 +174,6 @@ async function scrape3(title) {
         
         await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
         
-        // Use evaluate for timeout instead of waitForTimeout
         await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 2000)));
         
         const result = await page.evaluate(() => {
@@ -167,17 +189,71 @@ async function scrape3(title) {
         });
         
         if (!result) {
-            console.log(`No results found on site 3 for title: ${title}`);
-            return;
+            console.log(`No results found on Nool Ulagam for title: ${title}`);
+            return false;
         }
         
         console.log(`Found: "${result.title}" with image URL: ${result.imgUrl ? result.imgUrl.substring(0, 50) + '...' : 'None'}`);
         if (result.imgUrl) {
-            await saveImage(result.imgUrl, result.title);
+            const saved = await saveImage(result.imgUrl, result.title, 'noolulagam');
+            return saved;
         }
-        
+        return false;
     } catch (e) {
-        console.error(`Error scraping site 3 for title: ${title}`, e);
+        console.error(`Error scraping Nool Ulagam for title: ${title}`, e);
+        return false;
+    } finally {
+        if (browser) await browser.close();
+    }
+}
+
+// Scrape 3: Amazon
+async function scrape3(title) {
+    let browser;
+    try {
+        browser = await puppeteer.launch({
+            headless: "new",
+            args: ['--no-sandbox', '--disable-setuid-sandbox']
+        });
+        const page = await browser.newPage();
+
+        // Amazon blocks bots, so set a realistic user agent and viewport
+        await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
+        await page.setViewport({ width: 1200, height: 800 });
+
+        const url = `https://www.amazon.in/s?k=${encodeURIComponent(title)}`;
+        console.log(`Navigating to: ${url}`);
+
+        await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
+
+        // Wait for images to load
+        await page.waitForSelector('.s-image', { timeout: 10000 }).catch(() => null);
+
+        // Give a little extra time for dynamic content
+        await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 2000)));
+
+        const result = await page.evaluate(() => {
+            const imgEl = document.querySelector('.s-image');
+            const titleEl = document.querySelector('h2 .a-text-normal');
+            return {
+                title: titleEl ? titleEl.textContent.trim() : null,
+                imgUrl: imgEl ? imgEl.src : null
+            };
+        });
+
+        if (!result || !result.imgUrl) {
+            console.log(`No results found on Amazon for title: ${title}`);
+            return false;
+        }
+
+        // Use the searched title if Amazon title is missing
+        const saveTitle = result.title || title;
+        console.log(`Found: "${saveTitle}" with image URL: ${result.imgUrl ? result.imgUrl.substring(0, 50) + '...' : 'None'}`);
+        const saved = await saveImage(result.imgUrl, saveTitle, 'amazon');
+        return saved;
+    } catch (e) {
+        console.error(`Error scraping Amazon for title: ${title}`, e);
+        return false;
     } finally {
         if (browser) await browser.close();
     }
@@ -190,14 +266,31 @@ function sleep(ms) {
 async function processBook(title) {
     console.log(`\n========== Processing book: ${title} ==========`);
     
-    await scrape2(title);
+    // Try CommonFolks first
+    const cfSaved = await scrape1(title);
+    if (cfSaved) {
+        console.log('Image found and saved from CommonFolks. Skipping other sources.');
+        return;
+    }
     await sleep(2000);
+
+    // Try Nool Ulagam next
+    const noolSaved = await scrape2(title);
+    if (noolSaved) {
+        console.log('Image found and saved from Nool Ulagam. Skipping Amazon.');
+        return;
+    }
+    await sleep(2000);
+
+    // Try Amazon last
     await scrape3(title);
     await sleep(2000);
+
     console.log(`========== Finished processing book: ${title} ==========\n`);
 }
 
-fs.createReadStream('books60.csv')
+// ...existing code for reading CSV and starting processBook...
+fs.createReadStream('./500-815infiltered3000.csv')
     .pipe(csv({
         mapHeaders: ({ header }) => header.trim()
     }))
