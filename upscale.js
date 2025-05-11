@@ -5,7 +5,7 @@ const sharp = require('sharp'); // You'll need to install this: npm install shar
 // Configuration variables - set these instead of using command line arguments
 const inputDir = './images'; // Directory containing source images
 const outputDir = './upscaled'; // Directory to save processed images
-const scale = 3; // Scale factor for upscaling (changed from 8 to 3)
+const scale = 2; // Scale factor for upscaling (changed from 8 to 3)
 
 /**
  * Recursively get all image files in a directory and its subdirectories
@@ -30,6 +30,7 @@ function getAllImageFiles(dir) {
 
 /**
  * Upscales and converts images in a directory (and subdirectories) to WebP format with high quality
+ * All output images are stored in a single directory, using only the original filename (no folder names).
  * @param {string} inputDir - Directory containing images
  * @param {string} outputDir - Directory to save processed images
  * @param {number} scale - Scale factor for upscaling
@@ -47,16 +48,10 @@ async function processImages(inputDir, outputDir, scale = 3) {
 
   for (const inputPath of imageFiles) {
     try {
-      // Preserve subfolder structure in output
-      const relativePath = path.relative(inputDir, inputPath);
-      const folder = path.dirname(relativePath);
-      const fileName = path.parse(inputPath).name;
+      // Use only the original file name (without folder names) for output
+      const baseName = path.parse(inputPath).name;
       const fileExt = path.extname(inputPath).toLowerCase().substring(1); // Get extension without the dot
-      const outputFolder = path.join(outputDir, folder);
-      if (!fs.existsSync(outputFolder)) {
-        fs.mkdirSync(outputFolder, { recursive: true });
-      }
-      const outputPath = path.join(outputFolder, `${fileName}_${fileExt}.webp`);
+      const outputPath = path.join(outputDir, `${baseName}_${fileExt}.webp`);
 
       // Get image metadata
       const metadata = await sharp(inputPath).metadata();
@@ -80,7 +75,7 @@ async function processImages(inputDir, outputDir, scale = 3) {
         })
         .toFile(outputPath);
 
-      console.log(`✓ Processed: ${relativePath} → ${path.relative(outputDir, outputPath)} (${scale}x quality)`);
+      console.log(`✓ Processed: ${inputPath} → ${path.relative(outputDir, outputPath)} (${scale}x quality)`);
     } catch (error) {
       console.error(`✗ Error processing ${inputPath}:`, error.message);
     }
