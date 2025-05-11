@@ -1,0 +1,1207 @@
+generate a json file by Extracting data from the book CSV and make it into like example json given,
+ follow the rules we mentioned you have the template for reference and guidelines to follow, ensuring all required fields in example json are retrieved from csv and formatted with map ‘s provided
+
+guidelines:
+Translations:
+For Title, Author, Publisher, and Category, include both Tamil and Tanglish versions in the JSON as specified in the template.
+
+Tanglish translations should follow the CSV or a provided mapping, ensuring consistency.
+
+URL Handle:
+Convert the Title into a URL-encoded format (lowercase, hyphens for spaces, no special characters) for the "URL handle" field.
+
+Description:
+Follow the HTML structure in the template exactly, replacing placeholders with corresponding values.
+
+For Author, Publisher, and Category:
+Retrieve the name from the CSV.
+
+Use the URL map to find the URL-encoded version for the href attribute in the <a> tag.
+
+Wrap the name in the collection link: https://dodobooks.in/collections/URL-encoded-name.
+
+Include Tamil and Tanglish names in the format: Tamil Name (Tanglish Name).
+
+Also if editor and author exist add both
+
+Image Src:
+Use the base URL: https://samuvelraja.github.io/prodfilter/upscaled/.
+
+Retrieve the book image name from the image map.
+
+If multiple formats (webp, jpg, jpeg, png, gif) exist for the same image, prioritize in this order: webp, png, gif, jpg, jpeg (jpeg as last priority).
+
+Append the selected image name to the base URL. 
+
+
+Tags:
+Combine Publisher, Author,(also add editor if exist), and Category in Tanglish, separated by commas. Add tamil-books tag at last by default to all
+
+Use the Tanglish versions from the CSV or URL map, ensuring consistency with the Description field.
+
+Static Fields:
+Set "Vendor" to "dodobooks".
+
+Set "Published on online store" to "TRUE".
+
+Set "Status" to "draft".
+
+Set "Price / International" and "Compare-at price" to empty strings.
+
+Error Handling:
+If any required field is missing in the CSV, URL map, or image map, log the issue and skip the row, ensuring the JSON remains valid.
+
+Ensure URL-encoded values from the URL map are valid and correctly formatted.
+
+Output:
+Produce a valid JSON array with one object per CSV row, replacing all placeholders with actual values.
+
+Do not include placeholder comments or curly braces {} in the final output.
+
+ tamil in url map is just a reference always use tanglish from url map,
+
+dont empty tags  like - also in links if category doesnt exist just skip
+
+template:
+const json=[
+  {
+    "Title": "{title in tanglish}",
+    "URL handle": "(title in url format)",
+"Description": "<p>\n  <strong>Book Title:</strong> {Title in tamil (Title in tanglish)}<br>\n  <strong>Author:</strong>\n  <a href=\"https://dodobooks.in/collections/{author name in url encoded}\" title=\"{author name}\">\n   {author name in tamil (author name in tanglish)}\n  </a><br>\n  <strong>Publisher:</strong>\n  <a href=\"https://dodobooks.in/collections/{publisher name in url encoded}\" title=\"{publisher name}\">\n    {publisher name in tamil (Sandhiya Pathippagam)}\n  </a><br>\n  <strong>Year:</strong> {year}<br>\n  <strong>Category:</strong>\n  <a href=\"https://dodobooks.in/collections/{Category url encoded}\" title=\"{Category name}\">\n   { category name in tamil(category name in tanglish)}\n  </a><br>\n  <strong>Subject:</strong> {subject}<br>\n  <strong>No. of pages:{pages}</strong> -<br>\n  <strong>Language:</strong> {language}<br>\n  <strong>Book format:</strong> {format}<br>\n  <strong>ISBN:</strong>{isbn} -\n</p>",
+    "Vendor": "dodobooks",
+    "Published on online store": "TRUE",
+    "Status": "draft",
+    "Image Src": "https://samuvelraja.github.io/prodfilter/upscaled/{book image name}",
+    "Inventory quantity": '{Inventory}',
+    "Price": '{price}',
+    "Price / International": "",
+    "Compare-at price": "",
+    "Tags": "{publisher, author ,category}"
+  }
+]
+
+example json:
+
+[
+  {
+    "Title": "tamil book 2",
+    "URL handle": "tamil-book-2",
+    "Description": "<p>\n  <strong>Book Title:</strong> செகாவ் சிறுகதைகள் (Chekhov Sirukathaigal)<br>\n  <strong>Author:</strong>\n  <a href=\"https://dodobooks.in/collections/anton-pavlovich-chekhov\" title=\"anton-pavlovich-chekhov\">\n    ஆன்டன் செக்கோவ் (Anton Chekhov)\n  </a><br>\n  <strong>Publisher:</strong>\n  <a href=\"https://dodobooks.in/collections/santhiya-pathipagam\" title=\"santhiya-pathipagam\">\n    சந்தியா பதிப்பகம் (Sandhiya Pathippagam)\n  </a><br>\n  <strong>Year:</strong> 2021<br>\n  <strong>Category:</strong>\n  <a href=\"https://dodobooks.in/collections/short-story\" title=\"short-story\">\n    சிறுகதை, மொழிபெயர்ப்பு (Sirukathai, Mozhipeyarppu / Short Story, Translation)\n  </a><br>\n  <strong>Subject:</strong> பிற (Pirar / Others)<br>\n  <strong>No. of pages:</strong> -<br>\n  <strong>Language:</strong> தமிழ் (Tamil)<br>\n  <strong>Book format:</strong> Paperback<br>\n  <strong>ISBN:</strong> -\n</p>",
+    "Vendor": "test",
+    "Published on online store": "TRUE",
+    "Status": "draft",
+    "Image Src": "https://samuvelraja.github.io/prodfilter/upscaled/1800களின்_இந்தியா_jpg.webp",
+    "Inventory quantity": 10,
+    "Price": 25,
+    "Price / International": "",
+    "Compare-at price": "",
+    "Tags": "novel, Her Stories"
+  },
+  {
+    "Title": "tamil book 2",
+    "URL handle": "tamil-book-2",
+    "Description": "",
+    "Vendor": "",
+    "Published on online store": "",
+    "Status": "",
+    "Image Src": "https://samuvelraja.github.io/prodfilter/upscaled/1800களின்_இந்தியா_jpg.webp",
+    "Inventory quantity": "",
+    "Price": "",
+    "Price / International": "",
+    "Compare-at price": "",
+    "Tags": ""
+  }
+]
+
+image map:
+என்_பிரியமுள்ள_சிநேகிதனுக்கு_jpg.webp
+குறிஞ்சித்தேன்_jpg.webp
+குறிஞ்சித்தேன்_கௌரா_பதிப்பகக்_குழுமம்_jpg.webp
+ராணி_மங்கம்மாள்_அமராவதி_jpg.webp
+ராணி_மங்கம்மாள்_கவிதா_பப்ளிகேஷன்_jpg.webp
+1967_அறிஞர்_அண்ணாவின்_சொற்பொழிவுகள்_jpg.webp
+அகதி_(மொழிபெயர்ப்பு_கட்டுரைகள்)_jpg.webp
+அகத்தியர்_ஆராய்ச்சி_jpg.webp
+அகநானூறு_(மூன்று_தொகுதிகள்)_jpg.webp
+அகப்பை_சூப்_jpg.webp
+அடிப்படைத்_தமிழ்_2_jpg.webp
+அடுத்த_வீடு_ஐம்பது_மைல்_jpg.webp
+அண்ணல்_அடிச்சுவட்டில்_(நற்றிணை_பதிப்பகம்)_jpg.webp
+அதிகாலையின்_அமைதியில்_(கதவு_பதிப்பகம்)_jpg.webp
+அது_ஒரு_பிறைக்காலம்_jpg.webp
+அந்த_முகில்_இந்த_முகில்_jpg.webp
+அந்நியன்_jpg.webp
+அனல்_காற்று_jpg.webp
+அனல்காற்று_jpg.webp
+அனார்யா_நாதியற்றவன்_jpg.webp
+அனிச்ச_அடி_jpg.webp
+அன்னை_வயல்_(Dravidian_Stock)_jpg.webp
+அன்னையர்_பூமி_jpg.webp
+அன்னையின்_குரல்_jpg.webp
+அபத்தச்_சுவர்கள்_jpg.webp
+அபிதா_(மகிழினி_பதிப்பகம்)_jpg.webp
+அபிப்பிராய_சிந்தாமணி_jpg.webp
+அபூர்வ_மனிதர்கள்_jpg.webp
+அம்மா_உழைப்பதை_நிறுத்திக்_கொண்டார்_jpg.webp
+அம்மா_வந்தாள்_உளப்பகுப்பாய்வு_jpg.webp
+அம்மாளைக்_கும்பிடுரானுகள்_jpg.webp
+அம்மை_வடுமுகத்து_ஒரு_நாடோடி_ஆத்மாவின்_நினைவுக்_குறிப்புகள்_jpg.webp
+அயலான்_jpg.webp
+அரங்கேறிய_வெள்ளை_மொழி_jpg.webp
+அரபிக்_கடலோரம்_jpg.webp
+அருகர்களின்_பாதை_(விஷ்ணுபுரம்)_jpg.webp
+அர்தமோனவ்கள்_jpg.webp
+அறம்_அதிகாரம்_jpg.webp
+அறிவுலகமேதை_பெர்னார்டு_ஷா_jpg.webp
+அலைகளின்_காலம்_jpg.webp
+அலைவாய்க்_கரையில்_jpg.webp
+அல்ஃபோன்சம்மாவின்_மரணமும்_இறுதிச்_சடங்கும்_jpg.webp
+அழகிய_பெரியவன்_கதைகள்_jpg.webp
+அழகிய_பெரியவன்_குறுநாவல்கள்_jpg.webp
+அழிவின்_விளிம்பில்_அந்தமான்_jpg.webp
+அவள்_இவள்_உவள்_jpg.webp
+அவள்_நகரம்_அவள்_ஆடுகள்_jpg.webp
+ஆகவே_கொலை_புரிக!_jpg.webp
+ஆகாமரம்_jpg.webp
+ஆக்டோபஸின்_பேத்தி_jpg.webp
+ஆசை_முகங்கள்_jpg.webp
+ஆதிப்பழி_jpg.webp
+ஆதியில்_பிறந்தவர்கள்_jpg.webp
+ஆத்ம_சிந்தனை_jpg.webp
+ஆனையில்லா_jpg.webp
+ஆயிரத்தொரு_கத்திகள்_jpg.webp
+ஆயிரம்_ஊற்றுகள்_jpg.webp
+ஆயிரம்_கைகள்_jpg.webp
+ஆயுத_வியாபாரத்தின்_அரசியல்_jpg.webp
+ஆற்றின்_மோகம்_jpg.webp
+ஆலம்_jpg.webp
+ஆலயம்_எவருடையது_jpg.webp
+ஆழ்_நதியைத்_தேடி_jpg.webp
+இதுதான்_என்_பெயர்_jpg.webp
+இதுவும்_அதுவும்_உதவும்_jpg.webp
+இந்த_முழு_பிரபஞ்சத்தையும்விடச்_சற்றே_பெரியது_jpg.webp
+இந்தப்_பிறவியில்_இவ்வளவுதான்_jpg.webp
+இந்திய_இலக்கியக்_கோட்பாடுகள்_jpg.webp
+இந்திய_சமுதாய_வரலாற்றில்_பெண்மை_jpg.webp
+இந்தியப்_பயணம்_(விஷ்ணுபுரம்)_jpg.webp
+இந்தியா_அழைக்கிறது_jpg.webp
+இந்திரநீலம்_jpg.webp
+இந்து_ஞான_மரபில்_ஆறு_தரிசனங்கள்_jpg.webp
+இந்து_ஞானமரபில்_ஆறு_தரிசனங்கள்_jpg.webp
+இந்து_ஞானம்_jpg.webp
+இந்து_மதக்_கொடுகோன்மையின்_வரலாறு_jpg.webp
+இந்து_மெய்மை_jpg.webp
+இந்துமதத்_தத்துவம்_(எதிர்_வெளியீடு)_jpg.webp
+இனி_நான்_உறங்கட்டும்_jpg.webp
+இன்குலாப்_உறங்காக்_கனவு_jpg.webp
+இன்குலாப்_நாடகங்கள்_jpg.webp
+இன்குலாப்_நேர்காணல்கள்_jpg.webp
+இன்றைய_காந்திகள்_jpg.webp
+இமைக்கணம்_(விஷ்ணுபுரம்_பதிப்பகம்)_jpg.webp
+இயற்கை_விஞ்ஞானியின்_கதைகள்_jpg.webp
+இரண்டாம்_குடியேற்றம்_jpg.webp
+இரவு_உணவு_jpg.webp
+இராஜம்_கிருஷ்ணன்_நாவல்களில்_பெண்_பாத்திரங்கள்_jpg.webp
+இராமாயண_ஆராய்ச்சி_(உத்தர_காண்டம்)_png.webp
+இராமாயணம்_சக்கரவர்த்தித்_திருமகன்_jpg.webp
+இரு_கலைஞர்கள்_jpg.webp
+இருட்கனி_(செம்பதிப்பு)_jpg.webp
+இருள்விழி_jpg.webp
+இலக்கிய_விமர்சனம்_jpg.webp
+இலக்கியத்தின்_நுழைவாயிலில்_jpg.webp
+இலட்சிய_இந்து_ஓட்டல்_jpg.webp
+இலட்சுமணப்பெருமாள்_கதைகள்_jpg.webp
+இளையராஜா_ஏன்_முதல்வர்_வேட்பாளர்_இல்லை_png.webp
+இவர்கள்_இருந்தார்கள்_jpg.webp
+ஈராக்கின்_கிறிஸ்து_jpg.webp
+ஈராறுகால்கொண்டெழும்_புரவி_jpg.webp
+உச்சவழு_jpg.webp
+உடலாடும்_நதி_jpg.webp
+உடையாள்_jpg.webp
+உணர்ச்சிகளின்_ஊர்வலம்_jpg.webp
+உண்மைகள்_உறங்குவதில்லை_jpg.webp
+உயிர்_விளையும்_நிலங்கள்_jpg.webp
+உயிர்க்காற்று_jpg.webp
+உயிர்த்_தேன்_jpg.webp
+உரையாடும்_காந்தி_jpg.webp
+உலக_சினிமாவும்_தமிழ்_அடையாளமும்_jpg.webp
+உலகப்_புரட்சியாளன்_சேகுவேரா_jpg.webp
+உலோகம்_(விஷ்ணுபுரம்_பதிப்பகம்)_jpg.webp
+உள்ஒதுக்கீடு_சில_பார்வைகள்_jpg.webp
+உள்ளுணர்வின்_தடத்தில்_jpg.webp
+ஊதாநிறச்_செம்பருத்தி_jpg.webp
+ஊமைச்செந்நாய்_(கிழக்கு_பதிப்பகம்)_jpg.webp
+ஊரை_அழித்த_உறுபிணிகள்_jpg.webp
+ஊர்_சுற்றும்_விஞ்ஞானி_jpg.webp
+எங்கள்_மண்ணும்_இந்த_நாட்களும்_jpg.webp
+எங்கிருந்தோ_வந்தவை_(இரண்டாம்_தொகுதி)_jpg.webp
+எனக்கு_வீடு_நண்பர்களுக்கு_அறை_jpg.webp
+எனது_நீலப்_புவிக்கோளம்_jpg.webp
+என்._கே._ரகுநாதம்_jpg.webp
+என்ன_ஆனந்தம்_jpg.webp
+என்றென்றும்_எஸ்பிபி_jpg.webp
+எரிமலர்_jpg.webp
+எருது_jpg.webp
+எழுகதிர்_jpg.webp
+எழுதழல்_(விஷ்ணுபுரம்_பதிப்பகம்)_jpg.webp
+எழுதியவனைக்_கண்டுபிடித்தல்_jpg.webp
+ஏதிலியைத்_தொடர்ந்து_வரும்_நிலா_jpg.webp
+ஏன்_எழுதுகிறேன்_jpg.webp
+ஏழாம்_நூற்றாண்டின்_குதிரைகள்_(சால்ட்)_png.webp
+ஐந்து_நெருப்பு_jpg.webp
+ஒரு_கணத்தின்_மலர்கள்_jpg.webp
+ஒரு_சாகசக்காரனின்_கதை_jpg.webp
+ஒரு_நாயின்_கதை_jpg.webp
+ஒரு_படிமம்_வெல்லும்_ஒரு_படிமம்_கொல்லும்_jpg.webp
+ஒரு_முகமூடியின்_ஒப்புதல்_வாக்குமூலம்_jpg.webp
+ஒருபாலுறவு_சில_விவாதங்கள்_jpg.webp
+ஒளிரும்_பாதை_(சாகித்திய_அகாடெமி)_jpg.webp
+ஒவ்வொரு_புல்லையும்_பெயர்_சொல்லி_அழைப்பேன்_jpg.webp
+ஓ_ஹென்றியின்_கதைகள்_jpg.webp
+ஓடும்_ரயிலில்_பாய்ந்து_ஏறுவது_எப்படி_jpg.webp
+ஓநாய்_குலச்சின்னம்_jpg.webp
+ஓலம்_jpg.webp
+கடல்_மனிதனின்_வருகை_(புலம்_வெளியீடு)_jpg.webp
+கடல்_வானமோ_கார்மேகமோ_jpg.webp
+கடல்களும்_மனிதனும்_jpg.webp
+கண்ணீரைப்_பின்தொடர்தல்_(விஷ்ணுபுரம்_பதிப்பகம்)_jpg.webp
+கதாநாயகி_jpg.webp
+கதைச்_சிற்பி_சரத்சந்திரர்_jpg.webp
+கன்ஃபூஷியஸின்_கருத்துப்_பெட்டகம்_png.webp
+கன்னிகாவின்_கிராமத்துச்_சமையல்_jpg.webp
+கன்னிநிலம்_(விஷ்ணுபுரம்_பதிப்பகம்)_jpg.webp
+கபாடபுரம்_(நிவேதிதா_பதிப்பகம்)_jpg.webp
+கமலி_jpg.webp
+கம்பரின்_ஐந்து_நூல்கள்_jpg.webp
+கரிசல்_கருதுகள்_jpg.webp
+கரிப்பு_மணிகள்_(NCBH)_jpg.webp
+கற்பனை_அலைகள்_jpg.webp
+கற்பித்தலில்_புதிய_உத்திகள்_jpg.webp
+கல்_தனிமை_jpg.webp
+கல்பொருசிறுநுரை_jpg.webp
+களிற்றியானை_நிரை_(செம்பதிப்பு)_jpg.webp
+கவிதைக்_கலை_jpg.webp
+காஃப்கா_கடற்கரையில்_jpg.webp
+காகிதம்_(நியூசெஞ்சுரி_புக்_ஹவுஸ்)_jpg.webp
+காண்டீபம்_jpg.webp
+காதல்_அறிவியல்_jpg.webp
+காந்தள்_நாட்கள்_jpg.webp
+காந்தி_தரிசனம்_(காந்தி_அமைதி_அறக்கட்டளை)_jpg.webp
+கானகத்தின்_குரல்_(நற்றிணை_பதிப்பகம்)_jpg.webp
+கானகத்தின்_நல்வாழ்வு_jpg.webp
+கானமயில்_ஓர்_அறிமுகம்_jpg.webp
+கார்கடல்_(செம்பதிப்பு)_jpg.webp
+காலச்சுவடு_பதிவுகளில்_இஸ்லாம்_(1994_-_2007)_jpg.webp
+காலம்_கலை_கலைஞன்_(புலம்)_jpg.webp
+கினோ_2.0_jpg.webp
+கிராதம்_jpg.webp
+கீதையை_அறிதல்_jpg.webp
+குகைகளின்_வழியே_jpg.webp
+குமரித்துறைவி_jpg.webp
+கும்பல்_jpg.webp
+குருதி_கலந்த_கண்ணீர்_(உலகச்_சிறுகதைகள்)_jpg.webp
+குருதிச்சாரல்_jpg.webp
+குறிஞ்சி_மலர்_(கொடிமுல்லை)_jpg.webp
+குறிஞ்சித்_தேன்_(ஸ்ரீ_செண்பகா_பதிப்பகம்)_jpg.webp
+குறிஞ்சிமலர்_jpg.webp
+குறியியல்_ஓர்_அறிமுகம்_jpg.webp
+குலோத்துங்கன்_கவிதைகள்_ஒரு_கோபுர_தீபம்_jpg.webp
+குழந்தைகளுக்கான_குட்டிக்_கதைகள்_-_II_jpg.webp
+கூடுகள்_சிதைந்தபோது_jpg.webp
+கூட்டுக்_குஞ்சுகள்_jpg.webp
+கூண்டுப்_பறவை_ஏன்_பாடுகிறது_jpg.webp
+கூந்தல்_நேரம்_jpg.webp
+கெத்து_jpg.webp
+கேப்டன்_விஜயகாந்த்_jpg.webp
+கேரள_பழங்குடிக்_கவிதைகள்_jpg.webp
+கேரளத்தில்_எங்கோ_(உயிர்மை_பதிப்பகம்)_png.webp
+கேள்விக்குறி_(தேசாந்திரி)_jpg.webp
+கைவிடப்பட்ட_வளர்ப்பு_நாய்கள்_jpg.webp
+கொடுங்கோளூர்_கண்ணகி_jpg.webp
+கொட்டு_மேளம்_jpg.webp
+கொற்றவை_(விஷ்ணுபுரம்_பதிப்பகம்)_jpg.webp
+கோதானம்_jpg.webp
+ச._வயித்தியலிங்கரவர்_இயற்றிய_சிந்தாமணிநிகண்டு_jpg.webp
+சக்காரியாவின்_கதைகள்_jpg.webp
+சக்கிலியர்_வரலாறு_jpg.webp
+சங்ககால_சாதி_அரசியல்_jpg.webp
+சங்கச்_சித்திரங்கள்_(விஷ்ணுபுரம்_பதிப்பகம்)_jpg.webp
+சத்திய_வெள்ளம்_(திருமகள்_நிலையம்)_jpg.webp
+சவாரி_விளையாட்டு_jpg.webp
+சாகரம்_jpg.webp
+சாணக்கியரும்_சந்திரகுப்தனும்_jpg.webp
+சாதி_அரசியல்_அதிகாரம்_jpg.webp
+சாயங்கால_மேகங்கள்_(திருவரசு_புத்தக_நிலையம்)_jpg.webp
+சாயங்காலம்_jpg.webp
+சின்னக்குடை_(நீலம்_பதிப்பகம்)_jpg.webp
+சிலிர்ப்பு_jpg.webp
+சிலுக்கு_ஸ்மிதாவும்_சுலைமான்_ஹாஜியாரும்_jpg.webp
+சிலுவையின்_பெயரால்_(விஷ்ணுபுரம்_பதிப்பகம்)_jpg.webp
+சிவனருள்_அமுதம்_jpg.webp
+சிவப்பு_ரிக்க்ஷா_jpg.webp
+சிவப்புக்_கழுத்துடன்_ஒரு_பச்சைப்_பறவை_jpg.webp
+சுந்தரக்_கனவுகள்_jpg.webp
+சுல்தானின்_பீரங்கி_jpg.webp
+சூரிய_திசைப்_பயணம்_jpg.webp
+சூரிய_வேர்வை_jpg.webp
+செந்நா_வேங்கை_jpg.webp
+செம்மணிக்கவசம்_jpg.webp
+சே_குவேரா_ஒரு_போராளியின்_வாழ்க்கை_(இரண்டு_நூல்கள்)_(PB)_jpg.webp
+சேற்றில்_மனிதர்கள்_(ஸ்ரீ_செண்பகா_பதிப்பகம்)_jpg.webp
+சைபீரியா_ஓட்டம்_-_காத்தியா_jpg.webp
+சொர்க்கத்தின்_பறவைகள்_jpg.webp
+சொல்முகம்_(கிழக்கு_பதிப்பகம்)_jpg.webp
+சொல்லிமுடியாதவை_jpg.webp
+சொல்வளர்காடு_jpg.webp
+சோமசுந்தரக்_காஞ்சியாக்கம்_jpg.webp
+சோற்றுக்_கணக்கு_(விஷ்ணுபுரம்_பதிப்பகம்)_jpg.webp
+சோவியத்_இனமொழிச்_சிறுகதைகள்_(வளரி)_jpg.webp
+ஜப்பான்_பயணம்_jpg.webp
+ஜூவின்_கதை_jpg.webp
+ஜோனதன்_லிவிங்ஸ்டன்_என்கிற_கடற்பறவை_jpg.webp
+ஞாபக_விலங்கு_jpg.webp
+தகப்பன்_கொடி_(நீலம்_பதிப்பகம்)_jpg.webp
+தங்கப்புத்தகம்_jpg.webp
+தங்கமான_எங்கள்_ஊர்_jpg.webp
+தட்டகம்_jpg.webp
+தணியாத்_தீயின்_நாக்குகள்_jpg.webp
+தந்தையின்_காதலி_jpg.webp
+தனிப்பாடல்_கதைகள்_png.webp
+தன்னைக்_கடத்தல்_jpg.webp
+தன்மீட்சி_jpg.webp
+தபால்காரன்_jpg.webp
+தமிழ்_இலக்கிய_முன்னோடிகள்_jpg.webp
+தமிழ்ச்சுடர்_மணிகள்_jpg.webp
+தமிழ்நாட்டின்_பெண்_விடுதலைப்_போராளிகள்_jpg.webp
+தலித்_பார்ப்பனன்_jpg.webp
+தலைசிறந்த_இந்திய_கிராஃபிக்_நாவல்கள்_(பாகம்_1)_png.webp
+தல்ஸ்தோயின்_கலை_jpg.webp
+தாய்_உலகப்_புகழ்பெற்ற_காவியம்_jpg.webp
+தாலாட்டும்_தாய்மடி_jpg.webp
+தாவோ_தெ_ஜிங்_(தமிழ்வெளி)_jpg.webp
+திசைகளின்_நடுவே_(விஷ்ணுபுரம்_பதிப்பகம்)_jpg.webp
+திசைதேர்_வெள்ளம்_jpg.webp
+தீக்கொன்றை_மலரும்_பருவம்_jpg.webp
+தீராத_கவித்துவத்தின்_சுடர்_jpg.webp
+துணைவன்_jpg.webp
+துண்டிக்கப்பட்ட_தலையின்_கதை_jpg.webp
+துளசி_மாடம்_jpg.webp
+துளிக்_கனவு_jpg.webp
+துளிக்கனவு_jpg.webp
+தூங்கா_இரவுகள்_jpg.webp
+தென்றிசை_மாதெய்வங்கள்_jpg.webp
+தெய்வங்கள்_பேய்கள்_தேவர்கள்_(விஷ்ணுபுரம்_பதிப்பகம்)_jpg.webp
+தேநீர்_மேசை_jpg.webp
+தேர்ந்தெடுக்கப்பட்ட_புதுமைப்பித்தன்_சிறுகதைகள்_jpg.webp
+தேவமலர்_மற்றும்_கதைகள்_jpg.webp
+தோப்பில்_முஹம்மது_மீரான்_சிறுகதைகள்_jpg.webp
+நடந்தாய்;_வாழி,_காவேரி!_jpg.webp
+நடைவழி_நினைவுகள்_(அடையாளம்)_jpeg.webp
+நடைவழிக்_குறிப்புகள்_jpg.webp
+நட்ஹாம்சனின்_நிலவளம்_jpg.webp
+நத்தையின்_பாதை_jpg.webp
+நந்தா_விளக்கு_மற்றும்_இந்தியமொழிக்_கதைகள்_jpg.webp
+நமக்கிடையிலான_தொலைவு_jpg.webp
+நமது_இந்தியா_jpg.webp
+நமது_கைகளில்_jpg.webp
+நரகத்தில்_ஒரு_பருவகாலம்_jpg.webp
+நற்றிணை_மூலமும்_விளக்கவுரையும்_(பாகம்_-1)_jpg.webp
+நலமறிதல்_jpg.webp
+நளபாகம்_jpg.webp
+நவகண்டம்_jpeg.webp
+நவீன_அகராதியியல்_jpg.webp
+நவீனத்_தமிழிலக்கிய_அறிமுகம்_(விஷ்ணுபுரம்_பதிப்பகம்)_jpg.webp
+நாட்டுப்புற_ஏழை_மக்களுக்கு_jpg.webp
+நான்_ஊருக்குத்_திரும்பிக்_கொண்டிருக்கிறேன்;_ஆனால்_அங்கு_யாரும்_இல்லை_jpg.webp
+நான்காவது_கொலை_jpg.webp
+நாய்_சடைச்சியும்_சிறுவன்_போரியாவும்_jpg.webp
+நாராயணபுரம்_jpg.webp
+நாளும்_பொழுதும்_jpg.webp
+நாவல்_கோட்பாடு_jpg.webp
+நாவல்_வடிவில்_குண்டலகேசி_jpg.webp
+நிட்சாப_நதித்துறை_jpg.webp
+நித்திலவல்லி_(திருமகள்_நிலையம்)_jpg.webp
+நினைவின்_நிழல்கள்_png.webp
+நினைவில்_நிற்கும்_மனிதர்கள்_jpg.webp
+நிரந்தரச்_செல்வம்_jpg.webp
+நிலத்தின்_விளிம்புக்கு_jpg.webp
+நிலவொளி_எனும்_இரகசிய_துணை_jpg.webp
+நிழல்_நதி_jpeg.webp
+நீ_ஏன்_குதிரையைத்_தனியாக_விட்டாய்_jpg.webp
+நீர்_அளைதல்_jpg.webp
+நீர்க்கோபுரம்_jpg.webp
+நீர்க்கோலம்_jpg.webp
+நீர்ச்சுடர்_(செம்பதிப்பு)_jpg.webp
+நீல_நயனங்கள்_jpg.webp
+நீல_நாயின்_கண்கள்_jpg.webp
+நீலம்_(ஏப்ரல்_2025)_jpg.webp
+நூறு_சதவீத_பொருத்தமான_யுவதியை_ஓர்_அழகிய_ஏப்ரல்_காலையில்_பார்த்தபோது_jpg.webp
+நூறு_நாற்காலிகள்_(விஷ்ணுபுரம்_பதிப்பகம்)_jpg.webp
+நூறு_நிலங்களின்_மலை_jpg.webp
+நூறு_பெண்கள்_நூறு_சிறுகதைகள்_jpg.webp
+நெஞ்சக்கனல்_(ஸ்ரீ_செண்பகா_பதிப்பகம்)_jpg.webp
+நெஞ்சமுண்டு!_நேர்மையுண்டு!_jpg.webp
+நெரிந்து_jpg.webp
+நேரில்_கண்ட_ருஷ்யப்_புரட்சி_jpg.webp
+நேருவின்_இந்தியா_jpg.webp
+பசி_என்னும்_தீப்பிணி_jpg.webp
+பச்சைக்கனவு_jpg.webp
+பஞ்சபூதக்_கதைகள்_jpg.webp
+பஞ்சும்_பசியும்_jpg.webp
+படிகப்_பாடல்_jpg.webp
+படையல்_jpg.webp
+பட்டுப்_பூச்சி_jpg.webp
+பத்து_லட்சம்_காலடிகள்_jpg.webp
+பத்மநாபா_படுகொலை_jpg.webp
+பனிமனிதன்_(விஷ்ணுபுரம்_பதிப்பகம்)_jpg.webp
+பன்னிரு_படைக்களம்_jpg.webp
+பறவையின்_வாசனை_jpg.webp
+பலாக்கொட்டைத்_தத்துவம்_jpg.webp
+பழந்தமிழர்_கட்டடக்_கலையும்_நகரமைப்பும்_jpg.webp
+பாகவதக்_கதைகள்_jpg.webp
+பாஞ்சாலி_சபதம்_(மலர்_புக்ஸ்)_jpg.webp
+பாஞ்சாலி_சபதம்_பாடிய_பாரதி_(வரலாறு)_jpg.webp
+பாண்டிமாதேவி_(நிவேதிதா_பதிப்பகம்)_jpg.webp
+பாதுகாக்கப்பட்ட_துயரம்_jpg.webp
+பாதையில்_பதிந்த_அடிகள்_(பரிசல்)_jpg.webp
+பானுவின்_காதலன்,_சலனங்கள்_jpg.webp
+பாரத_குமாரிகள்_jpg.webp
+பாரதி_காலமும்_கருத்தும்_(கௌரா)_jpg.webp
+பாரதி_செல்லம்மா_jpg.webp
+பாரதியும்_ஷெல்லியும்_jpg.webp
+பாரபாஸ்_(அன்பு_வழி)_jpg.webp
+பாலையில்_ஒரு_சுனை_jpg.webp
+பால்_சக்காரியா_நேர்காணல்_jpg.webp
+பாஷோவின்_ஹைக்கூ_கவிதைகள்_jpg.webp
+பின்காலனிய_நினைவேக்கம்_jpg.webp
+பின்தொடரும்_நிழலின்_குரல்_(விஷ்ணுபுரம்_பதிப்பகம்)_jpg.webp
+பின்தொடரும்_பிரம்மம்_jpg.webp
+பியானோ_நவீன_உலகச்_சிறுகதைகள்_jpg.webp
+பிரதமன்_(விஷ்ணுபுரம்)_jpg.webp
+பிரயாகை_(விஷ்ணுபுரம்_பதிப்பகம்)_jpg.webp
+பிராப்ளம்ஸ்கி_விடுதி_jpg.webp
+பிராயச்சித்தம்_(திருமகள்_நிலையம்)_jpg.webp
+பிரேம்சந்த்_கதைகள்_(பாரதி_புத்தகாலயம்)_jpg.webp
+பிறந்த_மண்_(ஸ்ரீ_செண்பகா_பதிப்பகம்)_jpg.webp
+புதிய_காலம்_சில_சமகால_எழுத்தாளர்கள்_jpg.webp
+புதியகீதம்_இசைக்கின்றனர்_jpg.webp
+புதியதோர்_உலகு_செய்வோம்_(ஸ்ரீ_செண்பகா_பதிப்பகம்)_jpg.webp
+புதுதில்லியில்_புதுமைப்பித்தன்_கருத்தரங்கு_1987_jpg.webp
+புதுமைப்பித்தன்_கதைகள்_சில_விமர்சனங்களும்_விஷமத்தனங்களும்_jpg.webp
+புதுமைப்பித்தன்_கவிதைகள்_jpg.webp
+புதுமைப்பித்தன்_வரலாறு_jpg.webp
+புயலின்_மையம்_(கௌரா_பதிப்பகக்_குழுமம்)_jpg.webp
+புறநானூற்று_சிறுகதைகள்_jpg.webp
+புல்லின்_தழல்_jpg.webp
+புல்வெளி_ஓசை_jpg.webp
+புல்வெளி_தேசம்_(கிழக்கு_பதிப்பகம்)_jpg.webp
+பூக்கும்_மாலை_jpg.webp
+பூனைகள்_நகரம்_jpg.webp
+பூப்போல_ஒரு_பெண்_jpg.webp
+பூமி_எனும்_கோள்_jpg.webp
+பெட்ரோ_பராமோ_jpg.webp
+பெண்களற்ற_ஆண்கள்_jpg.webp
+பெண்குரல்_jpg.webp
+பெருகும்_வேட்கை_jpg.webp
+பெருமரங்கள்_விழும்போது_jpg.webp
+பேய்_கதைகளும்_தேவதை_கதைகளும்_jpg.webp
+பேய்க்கதைகளும்_தேவதைக்கதைகளும்_jpg.webp
+பொன்னியின்_செல்வன்_விவாதங்கள்_jpg.webp
+பொன்விலங்கு_(ஸ்ரீ_இந்து_பப்ளிகேஷன்ஸ்)_jpg.webp
+பொம்மக்கா_jpg.webp
+பொய்த்_தேவு_(எழுத்து_பிரசுரம்)_jpg.webp
+பொலிவதும்_கலைவதும்_jpg.webp
+போதிசத்வ_வெளியில்_வெண்முகில்கள்_புத்த_சரிதம்_jpg.webp
+மகாகவி_பாரதி_பற்றி_சோவியத்_அறிஞர்கள்_jpg.webp
+மகாத்மாவைத்_தேடி_png.webp
+மகாபாரதம்_நிழலும்_நிஜமும்_jpg.webp
+மணிபல்லவம்_(மக்கள்_பதிப்பு)_jpg.webp
+மண்_மக்கள்_மன்னன்_jpg.webp
+மதகுரு_jpg.webp
+மதுரை_சீமையை_ஆண்ட_ராணி_மங்கம்மாள்_jpg.webp
+மதுரை_முற்றுகை_jpg.webp
+மந்திரவாதியின்_சீடன்_jpg.webp
+மனிதனுக்கு_ஒரு_முன்னுரை_jpg.webp
+மர_நிறப்_பட்டாம்பூச்சி_jpg.webp
+மரணமின்மை_எனும்_மானுடக்கனவு_jpg.webp
+மரப்பசு_jpg.webp
+மருது_பாண்டியன்_jpg.webp
+மறைத்துப்_பேச_என்ன_இருக்கு_jpg.webp
+மலர்_மஞ்சம்_jpg.webp
+மலர்த்துளி_jpg.webp
+மலைச்_சிகரம்_png.webp
+மலைபூத்தபோது_jpg.webp
+மழைப்பாடல்_(விஷ்ணுபுரம்_பதிப்பகம்)_jpg.webp
+மானுடத்தின்_மகரந்தங்கள்_jpg.webp
+மாமலர்_jpg.webp
+மாயச்_சூழல்_jpg.webp
+மார்க்ஸும்_மார்க்சியமும்_jpg.webp
+மாவளி_jpg.webp
+மிகயீல்_ஷோலகவ்_கதைகள்_jpg.webp
+மின்சாரப்பூ_(மெய்_நிழல்)_jpg.webp
+முகங்களின்_தேசம்_jpg.webp
+முதற்கனல்_(விஷ்ணுபுரம்_பதிப்பகம்)_jpg.webp
+முதலாவிண்_jpg.webp
+முதல்_ஆசிரியர்_(திராவிடன்_ஸ்டாக்)_jpg.webp
+முதல்_இரவு_jpg.webp
+முதல்_மனிதன்_jpg.webp
+முதுநாவல்_jpg.webp
+முன்சுவடுகள்_சில_வாழ்க்கை_வரலாறுகள்_jpg.webp
+முறியடிப்பு_(ஸ்ரீ_செண்பகா_பதிப்பகம்)_jpg.webp
+மூன்றாவது_சிருஷ்டி_jpg.webp
+மூன்று_ஆண்டுகள்_jpg.webp
+மூன்று_காதல்_கதைகள்_(பரிசல்)_jpg.webp
+மே_தின_வரலாறு_jpg.webp
+மேற்குச்_சாளரம்_jpg.webp
+மேற்குச்சாளரம்_jpg.webp
+மேல்_கோட்டு_jpg.webp
+மைத்ரேயி_மற்றும்_பல_கதைகள்_jpg.webp
+மோக_முள்_jpg.webp
+யானை_காணாமலாகிறது_jpg.webp
+யானை_டாக்டர்_(விஷ்ணுபுரம்_பதிப்பகம்)_jpg.webp
+யாம்_சில_அரிசி_வேண்டினோம்_(நீலம்_பதிப்பகம்)_jpg.webp
+யேசு_கதைகள்_jpg.webp
+ரப்பர்_(விஷ்ணுபுரம்_பதிப்பகம்)_jpg.webp
+ராஜம்_கிருஷ்ணனின்_சிறுகதைகள்_jpg.webp
+ராஜாஜி_கட்டுரைகள்_jpg.webp
+ராஜாஜி_கதைகள்_jpg.webp
+ராஜாஜியின்_கருத்துகள்_jpg.webp
+ராஜாஜியின்_ஜெயில்_டைரி_jpg.webp
+ராணி_எறும்பின்_இரகசிய_சமையலறை_jpg.webp
+ராதையுமில்லை_ருக்மினியுமில்லை_jpeg.webp
+லெனினுக்கு_மரணமில்லை_jpg.webp
+லெனின்_வாழ்க்கைக்_கதை_(நக்கீரன்_பிரசுரம்)_jpg.webp
+லேடி_மவுண்ட்_பேட்டனின்_நள்ளிரவு_விருந்தாளி_jpg.webp
+வஞ்சிமா_நகர்_jpg.webp
+வஞ்சிமாநகரம்_jpg.webp
+வணங்கான்_jpg.webp
+வணிக_இலக்கியம்_jpg.webp
+வண்ணக்கடல்_(விஷ்ணுபுரம்_பதிப்பகம்)_jpg.webp
+வன_உரிமை_(அங்கீகாரம்)_சட்டம்_வழிகாட்டிக்_கையேடு_jpg.webp
+வனசாட்சி_(Jungle_Animals)_jpg.webp
+வலசைப்_பறவை_jpg.webp
+வல்லிசை_(நீலம்_பதிப்பகம்)_jpg.webp
+வள்ளுவர்_வாசகம்_jpg.webp
+வாசிப்பின்_வழிகள்_jpg.webp
+வாசிப்பே_மனிதனின்_சுவாசிப்பு_jpg.webp
+வாழ்க்கைப்_பாதை_(சாகித்திய_அகாடெமி)_jpg.webp
+வாழ்விலே_ஒரு_முறை_(விஷ்ணுபுரம்_பதிப்பகம்)_jpg.webp
+வாஸ்கோ_போப்பா_கவிதைகள்_jpg.webp
+விசும்பு_அறிவியல்_புனைகதைகள்_jpg.webp
+விண்வெளி_வீர_மங்கை_சுனிதா_வில்லியம்ஸ்_jpg.webp
+விதி_சமைப்பவர்கள்_jpg.webp
+விந்தைக்_கலைஞனின்_உருவச்_சித்திரம்_(புலம்)_jpg.webp
+வியக்க_வைக்கும்_விலங்குகள்_jpg.webp
+விலங்குப்_பண்ணை_(சுவாசம்)_jpg.webp
+வெண்கடல்_(விஷ்ணுபுரம்_பதிப்பகம்)_jpg.webp
+வெய்யோன்_jpg.webp
+வெற்றி_முழக்கம்_jpg.webp
+வெற்றித்_திருநகர்_jpg.webp
+வெளிச்சங்களை_புதைத்த_குழிகள்_jpg.webp
+வெள்ளையானை_போல_அந்த_மலை_jpg.webp
+வேங்கைச்சவாரி_jpg.webp
+வேட்டைக்கத்தி_jpg.webp
+வேப்பெண்ணெய்க்_கலயம்_jpg.webp
+வேருக்கு_நீர்_(மெய்_நிழல்)_jpg.webp
+ஸோக்ரதர்_jpg.webp
+ஸ்புட்னிக்_இனியாள்_jpg.webp
+ஃபைவ்_ஸ்டார்_துரோகம்_jpg.webp
+அருகர்களின்_பாதை_jpg.webp
+ஆத்மாவின்_ராகங்கள்_-_காந்திய_சகாப்த_நாவல்_jpg.webp
+ஆற்றின்_மோகம்_jpg.webp
+இந்திய_ஞானம்_(தேடல்கள்,_புரிதல்கள்)_jpg.webp
+இன்று_பெற்றவை_jpg.webp
+இராட்சஸக்_குள்ளன்_(வலை_மன்னன்_ஸ்பைடர்_சாகஸம்)_jpg.webp
+உதயமாகிறான்_உதய_சூரியன்_jpg.webp
+எழுதழல்_(வெண்முரசு_மகாபாரதம்_நாவல்_வடிவில்_-_15)_jpg.webp
+கபாடபுரம்_வரலாற்று_நாவல்_jpg.webp
+கம்பன்_பார்வையில்_வெய்யோன்_ஒளியுடையோன்_jpg.webp
+கறுப்பு_அடிமைகளின்_கதை_jpg.webp
+கோடுகளும்_கோலங்களும்_jpg.webp
+தனிக்குரல்_jpg.webp
+தமிழ்_இலக்கியக்_கதைகள்_jpg.webp
+திண்ணை_ரசாயனம்_jpg.webp
+திராவிட_இயக்கத்தின்_பெண்_விடுதலை_jpg.webp
+நா.பா._வின்_மொழியின்_வழியே_jpg.webp
+பட்டுப்பூச்சி_வளர்த்துப்_பணம்_சம்பாதிப்பது_எப்படி_(old_book_-_rare)_jpg.webp
+பிள்ளையார்_காப்பாற்றினார்_jpg.webp
+பூச்சுமை_jpg.webp
+மகாபாரதம்_அறத்தின்_குரல்_jpg.webp
+மணிபல்லவம்_jpg.webp
+மூவரை_வென்றான்_jpg.webp
+வஞ்சிமாநகரம்_jpg.webp
+வள்ளுவர்_வாசகம்_jpg.webp
+வான்_நெசவு_jpg.webp
+வெள்ளி_நிலம்_(சிறார்_நாவல்)_jpg.webp
+
+
+
+Full image
+
+url map
+
+Authors:
+வல்லிக்கண்ணன் (vallikannan)
+இந்திரன் (indiran)
+இராம அரங்கண்ணல் (rama-arangannal)
+இராசேந்திர சோழன் (rajendra-chozhan)
+அசோகமித்திரன் (asokamithran)
+கவிஞர் தமிழ்ஒளி (thamizh-oli)
+திருலோக சீத்தாராம் (thiruloga-seetharam)
+தி.ஜ.ரங்கநாதன் (t-j-ranganathan)
+சிட்டி (chitti)
+எம்.எஸ்.கல்யாணசுந்தரம் (em-es-kalyaanasundharam - slight spelling diff in XML)
+சுஜாதா (sujatha)
+ஆதவன் (aadhavan)
+பி.எஸ்.ராமையா (b-s-ramiah)
+ஐராவதம் (iravatham)
+ஜெயந்தன் (jeyanthan)
+ஜி. நாகராஜன் (g-nagarajan)
+கே.வி.ஜெயஸ்ரீ (k-v-jayashree)
+தமிழவன் (thamizhavan)
+பாவண்ணன் (paavannan)
+சி.ஆர்.ரவீந்திரன் (c-r-raveendran)
+எம்.கோபாலகிருஷ்ணன் (m-gopalakrishnan)
+பொன்னீலன் (ponneelan)
+வண்ணநிலவன் (vanna-nilavan)
+சல்மா (salma)
+தமிழ்மகன் (thamizh-magan)
+பெருமாள் முருகன் (perumal-murugan)
+காலபைரவன் (kaalabairavan)
+ஜனநேசன் (jananesan)
+குமாரநந்தன் (kumaranandhan)
+ஆதவன் தீட்சண்யா (aadhavan-dheetchanya)
+பூமணி (poomani)
+சமயவேல் (samayavel)
+சி. எம். முத்து (c-m-muthu)
+புதியமாதவி (pudhiyamaadhavi)
+திலகவதி (thilagavathi)
+அபிமானி (abimani)
+உஷா சுப்ரமணியன் (usha-subramanian)
+பாஸ்கர் சக்தி (bhaskar-sakthi)
+நா. விச்வநாதன் (naa-vichvanaadhan)
+ஜீ. முருகன் (g-murugan)
+பாப்லோ அறிவுக்குயில் (pablo-arivukkuyil)
+ப. கிருஷ்ணசாமி (p-krishnasamy)
+நரசய்யா (narasayya)
+குமார் அம்பாயிரம் (kumar-ambaayiram)
+எழில்வரதன் (ezhil-varadhan)
+ராமச்சந்திர வைத்தியநாத் (ramachandra-vaithyanath)
+உதயசங்கர் (udhayasankar)
+யுவன் சந்திரசேகர் (yuvan-chandrasekar)
+பா. செயப்பிரகாசம் (pa-jayaprakasam)
+பா. வெங்கடேசன் (ba-venkatesan)
+விக்ரமாதித்யன் (vikramaadhithyan)
+சுப்ரபாரதிமணியன் (subrabarathimaniyan)
+சிவசங்கரி (sivasankari)
+சோ.தர்மன் (cho-dharman)
+ஆண்டாள் பிரியதர்ஷினி (andal-priyadarshini)
+கீரனூர் ஜாகிர்ராஜா (keeranur-zakir-raja)
+சு.வேணுகோபால் (su-venugopal)
+அன்பாதவன் (anbaadhavan)
+ஸ்ரீதர கணேசன் (sridhara-ganesan)
+விமலாதித்த மாமல்லன் (vimaladhitha-maamallan)
+நீல பத்மநாபன் (neela-padmanaban)
+அமரந்தா (amarantha)
+சு. ஆ. வெங்கட சுப்புராய நாயகர் (s-a-vengada-subburaya-nayagar)
+Authors (Including Original Authors, Translators, Editors):
+தி.சா. ராஜு (ti-sa-raju) - Translator
+குர்தயாள் சிங் (gurdayal-singh) - Original Author
+தலீப் கௌர் டிவானா (daleep-kaur-tiwana) - Original Author
+பேரா. சு. சண்முகசுந்தரம் (pera-su-shanmugasundaram) - Editor
+சுரேஷ் வேங்கடாதிரி (suresh-venkatadhri) - Editor
+ஹெர்மன் ஹெஸ் (herman-hesse) - Original Author
+லூயி ஃபிஷர் (louis-fischer) - Original Author
+ஜிம் கார்பெட் (jim-corbett) - Original Author
+கே. ஏ. நீலகண்ட சாஸ்திரி (k-a-neelakanta-sastri) - Original Author
+மனோஜ் குரூர் (manoj-kuroor) - Original Author
+அசோகன் சருவில் (ashokan-charuvil) - Original Author
+சியாமளா சசிக்குமார் (shyamala-sasikumar) - Original Author
+சந்தோஷ் ஏச்சிக்கானம் (santhosh-echikkanam) - Original Author
+யு. ஆர். அனந்தமூர்த்தி (u-r-ananthamurthy) - Original Author
+கிரீஷ் கர்னாட் (girish-karnad) - Original Author
+சுசிலா நய்யார் (sushila-nayyar) - Original Author
+பிரையன் டிரேசி (brian-tracy) - Original Author
+கலீல் ஜிப்ரான் (kahlil-gibran) - Original Author
+Nicolas Notovitch - Original Author
+குன்வர் நாராயண் (kunwar-narayan) - Original Author
+ராகுல் சாங்கிருத்தியாயன் (rahul-sankrityayan) - Original Author
+ரேமண்ட் கார்வர் (raymond-carver) - Original Author
+வர்திக நந்தா (vartika-nanda) - Original Author
+விமல மெஹ்ரா (vimala-mehra) - Original Author
+நிர்மல் வர்மா (nirmal-verma) - Original Author
+கதே (goethe) - Original Author
+நித்ய சைதன்ய யதி (nitya-chaitanya-yati) - Original Author
+நாராயண (narayana) - Original Author
+மரு. இரா. இளங்கோவன் (dr-r-ilangovan) - Editor
+எஸ். ஆர். பட் (s-r-bhatt) - Original Author
+ஏ. எஸ். மகரெங்கோ (a-s-makarenko) - Original Author
+குறிஞ்சிவேலன் (kurinjivelan) - Translator
+N. Kalyanaraman - Translator
+Lakshmi Holmstrom - Translator
+அறிஞர் அண்ணா (arignar-anna) - Original Author
+கு. ப. ரா. (ku-pa-ra) - Original Author
+ஓடை பொ. துரை அரசன் (odai-po-durai-arasan) - Editor
+சுலவோமிர் மிரோசெக் (slawomir-mrozek) - Original Author
+ரியோகான் (ryokan) - Original Author
+அலெயேந்திரா பிஸார்நிக் (alejandra-pizarnik) - Original Author
+அன்னா ஸ்விர் (anna-swirszczynska) - Original Author
+டெம்சுலா ஆவ் (temsula-ao) - Original Author
+குர்ரத்துலைன் ஹைதர் (qurratulain-hyder) - Original Author
+கே. பி. பூர்ணச்சந்திர தேஜஸ்வி (k-p-poornachandra-tejaswi) - Original Author
+எரிக் ஹோப்ஸ்பாம் (eric-hobsbawm) - Original Author
+சமரேன் ராய் (samaren-roy) - Original Author
+விஜய் பிரசாத் (vijay-prasad) - Original Author
+சி.ஆர். தாஸ் (c-r-das) - Original Author
+வி. அபிமன்யு (v-abhimanyu) - Original Author
+சுரேஷ் பிரதீப் (suresh-pradeep) - Editor
+ஆத்மாநாம் (atmanam) - Original Author
+வு மிங் யி (wu-ming-yi) - Original Author
+லோரன்ஸ் வில்லலோங்கா (laurence-villalonga) - Original Author
+பெர் பெதர்சன் (per-petterson) - Original Author
+நகுலன் (nakulan) - Original Author
+ரேவதி குணசேகரன் (revathy-gunasekaran) - Editor
+க. பஞ்சாங்கம் (ka-panchangam) - Editor
+கர்த்தார் சிங் துக்கல் (kartar-singh-duggal) - Original Author
+இஸ்மாயில் கதாரே (ismail-kadare) - Original Author
+த. ராஜன் (tha-rajan) - Editor
+ஜி. மீனாட்சி (g-meenakshi) - Editor/Translator
+குல்ஸார் (gulzar) - Original Author
+மகாராசன் (maharasan) - Editor
+கோணங்கி (konangi) - Author/Subject
+ஐயப்பபணிக்கர் (ayyappa-paniker) - Original Author
+ஃபிடல் காஸ்ட்ரோ (fidel-castro) - Original Author
+மகாசுவேதா தேவி (mahasweta-devi) - Original Author
+ஜே.சி.குமரப்பா (j-c-kumarappa) - Original Author
+மார்த்தா த்ராபா (marta-traba) - Original Author
+கூகி வா தியாங்கோ (ngugi-wa-thiongo) - Original Author
+எமிலி மோரிஸ் (emily-morris) - Original Author
+ஆர். சிவகுமார் (r-sivakumar) - Editor
+ஷோபா சக்தி (shoba-sakthi) - Subject of Analysis
+
+Publishers:
+அமராவதி (amaravati)
+கௌரா பதிப்பகக் குழுமம் (goura-padhipagam - matches goura-pathippagak-kuzhumam)
+காவ்யா பதிப்பகம் (kavya-publishing-house)
+யாளி பதிவு வெளியீடு (yaali-pathivu-veliyeedu)
+டிஸ்கவரி புக் பேலஸ் (discovery-book-palace)
+எழுத்து பிரசுரம் (ezhuthu-pirasuram)
+பாரதி புத்தகாலயம் (barathi-buthagalayam)
+உயிர்மை பதிப்பகம் (uyirmai-pathippagam)
+நீலம் பதிப்பகம் (neelam-pathippagam)
+சிக்ஸ்த் சென்ஸ் பப்ளிகேஷன்ஸ் (sixth-sense-publications)
+தளபதி பதிப்பகம் (thalapathy-pathippagam)
+சந்தியா பதிப்பகம் (santhiya-pathipagam)
+தமிழினி (thamizhini)
+வம்சி புக்ஸ் (vamsi-books)
+அகல் பதிப்பகம் (akal-pathippagam)
+காலச்சுவடு (kaalachuvadu)
+கவிதா பப்ளிகேஷன் (kavitha-publication)
+நற்றிணை பதிப்பகம் (natrinai-padhipagam)
+Westland Publications (westland-publications)
+கிழக்கு பதிப்பகம் (kizhakku-pathippagam)
+நேஷனல் புக் டிரஸ்ட் (national-book-trust)
+நர்மதா பதிப்பகம் (narmadha-pathippagam)
+கலைஞன் பதிப்பகம் (kalaingnan-pathippagam)
+சூரியன் பதிப்பகம் (sooriyan-pathippagam)
+விருட்சம் (virutcham)
+சாகித்திய அகாடெமி (sahitya-akademy)
+யாவரும் பதிப்பகம் (yavarum-publishing-house)
+தமிழ்வெளி (tamizhveli)
+Rhythm Book Distributers (rhythm-book-distributers)
+வ. உ. சி. நூலகம் (v-o-c-noolagam)
+பழனியப்பா பிரதर्स (pazhaniyappa-brothers)
+பரிசல் (parisal)
+ஏனையவை (others - assumed match for 'Others' category if applicable)
+மணிவாசகர் பதிப்பகம் (manivaasagar-pathippagam)
+பாரி நிலையம் (paari-nilayam)
+சுவடு பதிப்பகம் (suvadu-pathippagam)
+எதிர் வெளியீடு (ethir-veliyeedu)
+அடையாளம் பதிப்பகம் (adaiyaalam-pathippagam)
+நியூசெஞ்சுரி புக் ஹவுஸ் (new-century-book-house)
+கண்ணதாசன் பதிப்பகம் (kannadhasan-pathippagam)
+திருவரசு புத்தக நிலையம் (thiruvarasu-buthaga-nilayam)
+நூல் வனம் (noolvanam)
+வானம் பதிப்பகம் (vaanam-pathippagam)
+புலம் வெளியீடு (pulam-veliyeedu - publisher found in CSV, need handle check) Correction: Pulam Veliyedu handle is not in the XML.
+அன்னம் - அகரம் பதிப்பகம் (annam-agaram-pathippagam)
+விஜயா பதிப்பகம் (vijaya-pathippagam)
+ஆழி பதிப்பகம் (azhisi-padhipagam - assumed match)
+ஜெய்ரிகி பதிப்பகம் (jaigiri-pathippagam - assumed match)
+வானதி பதிப்பகம் (vaanathi-pathippagam)
+விகடன் பிரசுரம் (vikatan-publication)
+அம்ருதா பதிப்பகம் (amrutha-pathippagam)
+தடாகம் வெளியீடு (thadagam-publications)
+ஆதி பதிப்பகம் (aadhi-pathippagam)
+எழுத்து பிரசுரம் (Tamil imprint of Zero Degree Publishing) (ezhuthu-pirasuram / zero-degree-publishing)
+பாதரசம் (paatharasam-books)
+க்ரியா (crea-publishers)
+மலைகள் (malaigal)
+கயல் கவின் (kayal-kavin - publisher found in CSV, need handle check) Correction: Kayal Kavin handle is not in the XML.
+கருப்புப் பிரதிகள் (karuppu-pirathigal)
+வாசல் பதிப்பகம் (vaasal-pathippagam)
+சிறுவாணி வாசகர் மையம் (siruvani-vasagar-maiyam)
+தன்னறம் நூல்வெளி (thannaram-publications)
+வேரல் புக்ஸ் (veral-books)
+சத்ரபதி வெளியீடு (chathrapathi-veliyeedu)
+நிமிர் வெளியீடு (nimir-veliyeedu)
+பன்மை வெளி (panmai-veli)
+போதி வனம் (bodhivanam)
+காலக்குறி (kalakkuri)
+மெய்யப்பன் பதிப்பகம் (meiyappan-pathippagam)
+விசா பப்ளிகேஷன்ஸ் (visa-publications)
+Penguin Random House (penguin-random-house)
+Red Panda (red-panda)
+தமிழ் திசை (tamil-thisai)
+நிவேதிதா பதிப்பகம் (niveditha-pathippagam)
+அறிவுப் பதிப்பகம் (arivu-pathippagam)
+மஞ்சுள் பப்ளிசிங் ஹவுஸ் (manjul-publishing-house)
+புலம் வெளியீடு (pulam-veliyeedu)
+Speaking Tiger (speaking-tiger)
+மின்னங்காடி (minnangadi)
+திராவிடர் கழகம் (dravidar-kazhagam)
+கயல் கவின் (kayal-kavin)
+அறம் பதிப்பகம் (aram-pathippagam)
+நன்னூல் பதிப்பகம் (nannool-pathippagam)
+அனன்யா (ananya)
+மணல்வீடு (manalveedu)
+தமிழ் மரபு அறக்கட்டளை (tamil-marabu-arakattalai)
+படிகள் (padigam)
+நக்கீரன் பப்ளிகேஷன்ஸ் (nakkeeran-publications)
+பொன்னுலகம் (ponnulagam)
+வாசகசாலை (vaasagasalai)
+கங்கை புத்தக நிலையம் (gangai-puthaga-nilayam)
+யாப்பு வெளியீடு (yaappu-veliyeedu)
+ஏகம் பதிப்பகம் (egam-pathippagam)
+
+
+Categories/Subjects:
+சிறுகதை (short-story)
+நாவல் (novel)
+வரலாறு (varalaru / varalaaru)
+கட்டுரை (esaay)
+கவிதை (kavithaigal)
+சுற்றுலா / பயணம் (suttrula-payanam)
+கலை (kalai)
+இலக்கியம் (ilakiyam)
+சினிமா (cinema)
+மொழிப்பெயர்ப்பு (translation)
+தலித்தியம் (thaliththiyam)
+சிறுவர் கதை (kids-stories / kuzhanthaigal)
+நகைச்சுவை (nagaichuvai)
+நாட்குறிப்பு / நினைவுக்குறிப்பு (naadkurippu-ninaivukkurippu)
+தமிழக அரசியல் (india-arasiyal / tamilnadu - broad match)
+தன்வரலாறு (tanvaralaru)
+அறிவியல் / தொழில்நுட்பம் (ariviyal-thozhilnutpam)
+வளர்ச்சி (valarchi)
+நேர்காணல் (interview / nerkanal)
+பெண்கள் (pengal)
+காலனித்துவம் / ஏகாதிபத்தியம் (kaalaniththuvam-ekaadhipathiyam)
+காந்தி (gandhi - Subject, handle missing but concept present)
+சூழலியல் (soozhaliyal)
+வாழ்க்கை வரலாறு (biography)
+ஆங்கில இலக்கியம் (english-literature / aangila-ilakkiyam)
+பௌத்தம் (pauththam)
+ஆன்மிகம் (aanmigam)
+மெய்யியல் (meiyyiyal)
+பண்பாடு (panpaadu)
+குடும்பம் / உறவு (kudumbam-uraavu)
+சமூக நீதி (samuga-neethi)
+கல்வி (kalvi)
+தமிழ்நாடு (tamilnadu)
+இந்திய அரசியல் (india-arasiyal)
+விளையாட்டு (vilaiyaattu)
+இந்தியப் பிரிவினை (india-suthanthira-porattam - broad match)
+சமூகவியல் (samoogaviyal)
+மானுடவியல் (maanudaviyal)
+பருவ இதழ் (paruva-ithazh)
+நாடகம் (drama)
+கடிதம் (kaditham)
+படப் புத்தகம் (padap-puththakam / photo-book)
+இஸ்லாம் / முஸ்லிம்கள் (islam-muslimkal)
+மார்க்சியம் (marxiam)
+ஈழம் (eezham)
+விளிம்புநிலை மக்கள் (vilimbunilai-makkal)
+சுயமுன்னேற்றம் (suyamunnetram)
+கிறிஸ்தவம் (kiristhavam)
+இந்து மதம் (hindhu-matham)
+வணிகம் (vanikam)
+சர்வதேச அரசியல் (sarvadesa-arasiyal)
+சுதந்திரம் / பாதுகாப்பு (suthanthiram-paadhugappu)
+நாட்டாரியல் (nattaariyalnattaariyal)
+இசை (isai)
+சிறையனுபவம் (sirai-anubavam)
+இந்துத்துவம் / பார்ப்பனியம் (hinduththuvam-paarppaniyam)
+காலனிய நீக்கம் (kaalaniya-neekkam)
+பெண்ணியம் (penniam)
+நினைவஞ்சலி (ninaivanjali)
+குறுநாவல் (kurunovel)
+பிற (pira / others)
+காமிக்ஸ் / கிராஃபிக் நாவல் (comics-graphic-novel)
+திரைக்கதை (thiraikkathai)
+பேய்க்கதை (pei-kadhai)
+மொழி / மொழியியல் (mozhi-mozhiyiyal)
+காதல் (kaadhal)
+தற்சார்பு வாழ்க்கை (tharsarbu-vazhkai)
+
+
+க்ரைம் த்ரில்லர் (crime-thriller)
+பொருளாதாரம் (economics)
+Archaeology
+Genome
+
+Newly added url map
+continue  this from the list remove image src i dont it but i need this in js object format
+the title should in tanglish use the given translation inside () without url encode
+example
+const collections = [
+{
+title: "ti sa raju",
+body_html: " தி.சா. ராஜு ஒரு குறிப்பிடத்தக்க தமிழ் எழுத்தாளர் மற்றும் மொழிபெயர்ப்பாளர். இவர் பிற மொழி படைப்புகளை தமிழுக்கு கொண்டு வருவதில் பங்களித்துள்ளார். (குறிப்பு: இவரைப் பற்றிய விரிவான தகவல்கள் இணையத்தில் குறைவாகவே உள்ளன)",
+published: true
+},
+{
+title: "gurdayal singh",
+body_html: "குர்தயாள் சிங் (1933-2016) ஒரு புகழ்பெற்ற பஞ்சாபி நாவலாசிரியர் மற்றும் சிறுகதை எழுத்தாளர். ஞானபீட விருது மற்றும் பத்மஸ்ரீ விருது பெற்றவர். இவரது படைப்புகள் கிராமப்புற பஞ்சாபின் யதார்த்த வாழ்வை சித்தரித்தன",
+published: true
+}
+];
+
+
+பீட்டர் வோர்ஸ்லி (peettar-vorsli)
+லியோ டால்ஸ்டாய் (liyo-talstaay)
+கட்டுரை (katturai)
+கவிதை (kavithai)
+வாங்கெங் சென் (vaangeng-sen)
+பி. கே. பாலகிருஷ்ணன் (pi-ke-paalakrishnan)
+பெர் லாகர்குவிஸ்ட் (per-laakarkuist)
+செங்கனி பதிப்பகம் (sengani-pathippagam)
+ஸெல்மா லாகர்லெவ் (selmaa-laakarlev)
+ஆல்பெர் காம்யு (aalper-kaamyu)
+நட் ஹாம்சன் (nat-haamsan)
+ஆந்த்ரே ழீடு (aanthre-zheedu)
+கே. வி. ஷைலஜா (ke-vi-shailajaa)
+கோவிலன் (kovilan)
+செறுகாடு (serukaadu)
+மதுபால் (mathupaal)
+சுபாஷ் சந்திரன் (subaash-chandran)
+பேரா. எம். கே. ஸாநு (peraa-em-ke-saanu)
+என். எஸ். மாதவன் (en-es-maathavan)
+இ. பாலகிருஷ்ணா (i-paalakrishnaa)
+காக்கநாடன் (kaakkanaadan)
+கிரேஸியா டெலடா (keresiyaa-teledaa)
+ஜார்ஜ் கேமாவ் (jaarj-kemaav)
+தோப்பில் முஹம்மது மீரான் (thoppil-muhammathu-meeraan)
+களந்தை பீர் முகம்மது (kalanthai-peer-muhammathu)
+கோ யுன் (ko-yun)
+JP. Rajendran (jp-rajendran)
+போர்ஹெஸ் (porhes)
+பால் செலான் (paal-selaan)
+மஹ்மூத் தர்வீஷ் (mahmooth-tharveesh)
+Fernando Pessoa (fernando-pessoa)
+பாஷோ (paasho)
+லாவோட்சு (laavotsu)
+கே. ஜி. சங்கர பிள்ளை (ke-ji-sankara-pillai)
+வி.ஆர்.சந்திரன் (vi-aar-chandhiran)
+கல்பட்டா நாராயணன் (kalpattaa-naaraayananan)
+எமர்சன் (emarsan)
+கொடிமுல்லை (kotimullai)
+எஸ். ஸி. சென்குப்தா (es-si-senkupthaa)
+ஹாருகி முரகாமி (haaruki-murakaami)
+லக்ஷ்மி ப்ரியா (lakshmi-priyaa)
+ஸ்ரீதர் ரங்கராஜ் (sireethar-rangaraaj)
+கார்த்திகைப் பாண்டியன் (kaarththikaip-paantiyan)
+ச. ஆறுமுகம் (sa-aarumukam)
+கடல் பதிப்பகம் (kadal-pathippakam)
+ஜி . குப்புசாமி (ji-kuppusaami)
+கே. சுப்பிரமணியன் (ke-suppiramaniyan)
+சிபிச்செல்வன் (sipichchelvan)
+ஓ. ஹென்றி (o-henri)
+வி. எஸ் .வெங்கடேசன் (vi-es-vengatesan)
+கோ. பிரேம்குமார் (ko-piremkumaar)
+வீ. அரசு (vee-arasu)
+தமிழ் அலை (thamil-alai)
+சுபாஷ் முகோபாத்யாய் (subaash-mukopaathyaay)
+பாரதிபாலன் (paarathipaalan)
+மக்ஸிம் கார்க்கி (maksim-kaarkki)
+அலெக்ஸாந்தர் டிராச்டென்பர்க் (aleksaanthar-tiraachatenpark)
+தோழமை வெளியீடு (tholamai-veliyeedu)
+ஆ. இரா. வேங்கடாசலபதி (aa-iraa-vengataachalapathi)
+இளசை மணியன் (ilasai-maniyan)
+தமிழ்க் குடிஅரசுப் பதிப்பகம் (tamilk-kutiarasup-pathippakam)
+யுவான் ரூல்ஃபோ (yuvaan-roolpho)
+ஆர்தர் ரைம்போ (aarthar-raaimpo)
+யுகியோ மிஷிமா (yukiyo-mishimaa)
+அதிர்வு (athirvu)
+சுந்தரவேலு பன்னீர்செல்வம் (suntharavelu-panneerselvam)
+நாகரத்தினம் கிருஷ்ணா (naakarathinam-kirushnaa)
+ஏ. வி. ஜவஹர் (e-vi-javahar)
+Sandra Smith (sandra-smith)
+Carol Cosman (carol-cosman)
+வி. நட்ராஜ் (vi-natraaj)
+ச. மதனகல்யாணி (sa-mathanakalyaani)
+ஆனந்தா பதிப்பகம் (aananthaa-pathippakam)
+ஏ.எஸ்.பி. ஐயர் (e-es-pi-aiyar)
+த.நா. ஸேனாபதி (tha-naa-senaapathi)
+விபூதி பூஷண் பந்தோபாத்யாய (vipoothi-pooshan-panthopaathyaaya)
+அப்துல்ரஸாக் குர்னா (apthulrasaak-kurnaa)
+சால்ட் (saalt)
+டிமிட்ரி வெர்ஹல்ஸ்ட் (timitri-verhalst)
+அபூபக்கர் ஆடம் இப்ராஹிம் (apoopakkar-aadam-ipraahim)
+பி.ஸி.ராய் சௌத்ரி (pi-si-raay-sauthuri)
+சரண்குமார் லிம்பாலே (sarankumaar-limpaale)
+ம. மதிவண்ணன் (ma-mathivannan)
+எஸ். பாலச்சந்திரன் (es-paalachchanthiran)
+அன்புசெல்வம் (anpuselvam)
+ராவ் சாகிப் எல்.சி. குருசாமி (raav-saakip-el-si-kurusaami)
+ச. வீரமணி (sa-veeramani)
+சரஸ்வதி ராம்நாத் (sarasvathi-raamnaath)
+மதியழகன் சுப்பையா (mathiyazhakan-suppaiyaa)
+அந்திமழை (anthimazhai)
+அம்ரிதா பிரிதம் (amrithaa-piritham)
+IMROZ (imroz)
+அசதா (asathaa)
+இவால்ட் ஃப்ளிஸர் (ivaalt-phlisar)
+டேவிட் கிராஸ்மன் (tevit-kiraasman)
+நாதன் பதிப்பகம் (naathan-pathippakam)
+Anand Giridharadas (anand-giridharadas)
+அவை நாயகன் (avai-naayakan)
+அருட்செல்வர் நா. மகாலிங்கம் மொழிபெயர்ப்பு மையம் வெளியீடு (arutselvar-naa-makaalingam-mozhipeyarppu-maiyam-veliyeedu)
+மாயா ஏஞ்சலோ (maayaa-enjalo)
+இவான் துர்கனேவ் (ivaan-thurkanev)
+பூ. சோமசுந்தரம் (poo-somasuntharam)
+சிங்கிஸ் ஐத்மாத்தவ் (singkis-aithmaaththav)
+திராவிடன் ஸ்டாக் (thiraavidan-staak)
+பரீஸ் வஸீலியெவ் (parees-vaseeliyev)
+கதவு பதிப்பகம் (kathavu-pathippakam)
+சிந்தன் புக்ஸ் (sinthan-puks)
+புருனோ பஸேன்ஸ்க்கிப் (puruno-pasenskkip)
+கான்ஸ்தான்தீன் ஸிமனவ் (kaansthaantheen-simanav)
+அலெக்சாந்தர் புஷ்கின் (aleksaanthar-pushkin)
+அலெக்சாந்தர் ஃபதேயெவ் (aleksaanthar-phatheyev)
+ம. பரானவா ,யெ. வெல்தீஸ்தவ் (ma-paraanavaa-ye-veltheesthav)
+முஸ்தாய் கரீம் (musthaay-kareem)
+ஹெர்மன் தித்தோவ் (herman-thiththov)
+மரியா பிரிலெழாயெவா (mariyaa-pirilezhaayeva)
+மிஹயீல் நெஸ்தூர்ஹ் (mihayeel-nesthoorkh)
+நல்ல நிலம் பதிப்பகம் (nalla-nilam-pathippakam)
+ரா. கிருஷ்ணய்யா (raa-kirushnayyaa)
+ச. சுப்பாராவ் (sa-suppaaraav)
+ஆ. ரைஸ் வில்லியம்ஸ் (aa-rais-vilyams)
+கியோர்கி மார்க்கவ் (kiyorki-maarkkav)
+T. M. C. Raghunathan (t-m-c-raghunathan)
+விமர்சனம் (vimarsanam)
+காலச்சுவடு (kaalachuvadu)
+இலக்கணம் (ilakkanam)
+
+
+
+
+book csv
+
+Author,Title,Orginal Author,Translator,Editor,Language,No of pages,Publisher,Year of Published,Category,Subject,Price,ISBN,Book format
+ஜெயமோகன்,1. சூரிய திசைப் பயணம்,-,-,-,தமிழ்,-,விஷ்ணுபுரம் பதிப்பகம்,2025,-,-,170,-,Paper Back
+"                   ,,",2. கீதையை அறிதல்,-,-,-,தமிழ்,-,விஷ்ணுபுரம் பதிப்பகம்,2025,-,-,290,-,Paper Back
+"                   ,,",3. இந்தியப் பயணம் (விஷ்ணுபுரம்),-,-,-,தமிழ்,-,விஷ்ணுபுரம் பதிப்பகம்,2024,பயணக்குறிப்பு,-,210,-,Paper Back
+"                   ,,",4. இந்து ஞானம்,-,-,-,தமிழ்,-,விஷ்ணுபுரம் பதிப்பகம்,2025,கட்டுரை,இந்து மதம்,140,-,Paper Back
+"                   ,,","5. உள்ளுணர்வின் தடத்தில்
+
+",-,-,-,தமிழ்,-,விஷ்ணுபுரம் பதிப்பகம்,2025,-,-,320,-,Paper Back
+"                   ,,",6. ஆழ் நதியைத் தேடி,-,-,-,தமிழ்,-,விஷ்ணுபுரம் பதிப்பகம்,2025,-,-,290,-,Paper Back
+"                   ,,",7. இந்திய ஞானம் (விஷ்ணுபுரம்,-,-,-,தமிழ்,-,விஷ்ணுபுரம் பதிப்பகம்,2025,கட்டுரை,"மெய்யியல்,இந்து மதம்",380,,Paper Back
+"                   ,,",8. பிரதமன் (விஷ்ணுபுரம்),-,-,-,தமிழ்,,விஷ்ணுபுரம் பதிப்பகம்,2024,சிறுகதை,-,220,,Paper Back
+"                   ,,",9. பின்தொடரும் பிரம்மம்,-,-,-,தமிழ்,112,விஷ்ணுபுரம் பதிப்பகம்,2024,நாட்குறிப்பு / நினைவுக்குறிப்பு,-,100,9789395260336,Paper Back
+"                   ,,",10. அருகர்களின் பாதை (விஷ்ணுபுரம்),-,-,-,தமிழ்,336,விஷ்ணுபுரம் பதிப்பகம்,2024,பயணக்குறிப்பு,வரலாறு,400,9789392379451,Paper Back
+"                   ,,",11.உடையாள்,-,-,-,தமிழ்,123,விஷ்ணுபுரம் பதிப்பகம்,2024,"நாவல்,குழந்தைகள்",-,160,9789392389369,Paper Back
+"                   ,,",12. மண்,-,-,-,தமிழ்,-,விஷ்ணுபுரம் பதிப்பகம்,2024,சிறுகதை,-,300,-,Paper Back
+"                   ,,",13. படுகளம் (விஷ்ணுபுரம்),-,-,-,தமிழ்,-,விஷ்ணுபுரம் பதிப்பகம்,2024,நாவல்,க்ரைம் த்ரில்லர்,340,-,Paper Back
+"                   ,,",14. ஏழாம் உலகம் (விஷ்ணுபுரம் பதிப்பகம்),-,-,-,தமிழ்,-,விஷ்ணுபுரம் பதிப்பகம்,2024,நாவல்,-,400,-,Paper Back
+"                   ,,",15. புறப்பாடு (விஷ்ணுபுரம் பதிப்பகம்),-,-,-,தமிழ்,512,விஷ்ணுபுரம் பதிப்பகம்,2024,கட்டுரை,-,600,-,Paper Back
+"                   ,,",16. எழுதும் கலை (விஷ்ணுபுரம் பதிப்பகம்),-,-,-,தமிழ்,-,விஷ்ணுபுரம் பதிப்பகம்,2024,கட்டுரை,இலக்கியம்,190,-,Paper Back
+"                   ,,",17. அறம் (சிறுகதை),-,-,-,தமிழ்,-,விஷ்ணுபுரம் பதிப்பகம்,2024,சிறுகதை,-,40,-,Paper Back
+"                   ,,",18. கொற்றவை (விஷ்ணுபுரம் பதிப்பகம்),-,-,-,தமிழ்,-,விஷ்ணுபுரம் பதிப்பகம்,2023,நாவல்,,900,9789395260183,Paper Back
+"                   ,,",19. வெள்ளை யானை (விஷ்ணுபுரம் பதிப்பகம்),-,-,-,தமிழ்,-,Vishnupuram Publications,2023,Novel,-,600,9789392379918,Paper Back
+"                   ,,",20. வாழ்விலே ஒரு முறை (விஷ்ணுபுரம் பதிப்பகம்,-,-,-,தமிழ்,132,விஷ்ணுபுரம் பதிப்பகம்,2023,கட்டுரை,-,180,9789392379697,Paper Back
+"                   ,,",21. முன்சுவடுகள் : சில வாழ்க்கை வரலாறுகள்,-,-,-,தமிழ்,168,விஷ்ணுபுரம் பதிப்பகம்,2023,கட்டுரை,வரலாறு,240,9789392379604,Paper Back
+"                   ,,",22. தெய்வங்கள் பேய்கள் தேவர்கள் (விஷ்ணுபுரம் பதிப்பகம்),-,-,-,தமிழ்,282,விஷ்ணுபுரம் பதிப்பகம்,2023,கட்டுரை,-,380,9789392379352,Paper Back
+"                   ,,",23. ஆலம்,-,-,-,தமிழ்,232,விஷ்ணுபுரம் பதிப்பகம்,2023,நாவல்,-,330,9789395260459,Paper Back
+"                   ,,",24. சோற்றுக் கணக்கு (விஷ்ணுபுரம் பதிப்பகம்),-,-,-,தமிழ்,32,விஷ்ணுபுரம் பதிப்பகம்,2023,சிறுகதை,க்ளாசிக்ஸ்,50,-,Paper Back
+Translation,25. பலாக்கொட்டைத் தத்துவம்,கே. ஜி. சங்கர பிள்ளை,ஜெயமோகன்,-,தமிழ்,72,விஷ்ணுபுரம் பதிப்பகம்,2023,கவிதை,-,100,9789395260091,Paper Back
+"                   ,,",26. படையல்,-,-,-,தமிழ்,248,விஷ்ணுபுரம் பதிப்பகம்,2023,சிறுகதை,-,330,9789395260503,Paper Back
+"                   ,,",27. நாவல் கோட்பாடு,-,-,-,தமிழ்,-,விஷ்ணுபுரம் பதிப்பகம்,2023,கட்டுரை,-,200,-,Paper Back
+Translation,"28. கொடுங்கோளூர் கண்ணகி
+",வி.ஆர்.சந்திரன்,ஜெயமோகன்,-,தமிழ்,-,விஷ்ணுபுரம் பதிப்பகம்,2023,"கட்டுரை,மொழிபெயர்ப்பு",பாரம்பரியம்,210,-,Paper Back
+"                   ,,",29. சங்கச் சித்திரங்கள் (விஷ்ணுபுரம் பதிப்பகம்),-,-,-,தமிழ்,-,விஷ்ணுபுரம் பதிப்பகம்,2023,கட்டுரை,தொல்லியல்,300,-,Paper Back
+"                   ,,",30. பனிமனிதன் (விஷ்ணுபுரம் பதிப்பகம்),-,-,-,தமிழ்,-,விஷ்ணுபுரம் பதிப்பகம்,2023,நாவல்,-,330,-,Paper Back
+"                   ,,",31.நூறு நாற்காலிகள் (விஷ்ணுபுரம் பதிப்பகம்),-,-,-,தமிழ்,-,விஷ்ணுபுரம் பதிப்பகம்,2023,சிறுகதை,-,50,-,Paper Back
+"                   ,,",32. காடு (விஷ்ணுபுரம் பதிப்பகம்),-,-,-,தமிழ்,-,விஷ்ணுபுரம் பதிப்பகம்,2023,நாவல்,பிற,650,-,Paper Back
+"                   ,,",33.ஒளிரும் பாதை,-,-,-,தமிழ்,-,விஷ்ணுபுரம் பதிப்பகம்,2023,கட்டுரை,வாழ்கை முறை,320,-,Paper Back
+Translation,"34. தொடுதிரை
+மலையாளக் கவிதைகள்",கல்பட்டா நாராயணன்,ஜெயமோகன்,-,தமிழ்,-,விஷ்ணுபுரம் பதிப்பகம்,2023,"கவிதை,மொழிபெயர்ப்பு",-,100,9789395260077,Paper Back
+"                   ,,",35. பத்ம வியூகம் (விஷ்ணுபுரம் பதிப்பகம்),-,-,-,தமிழ்,308,விஷ்ணுபுரம் பதிப்பகம்,2023,சிறுகதை,இந்து மதம்,400,-,Paper Back
+"                   ,,",36. மலர்த்துளி,-,-,-,தமிழ்,-,விஷ்ணுபுரம் பதிப்பகம்,2023,சிறுகதை,காதல்,250,-,Paper Back
+"                   ,,",37. துணைவன்,-,-,-,தமிழ்,-,விஷ்ணுபுரம் பதிப்பகம்,2023,சிறுகதை,-,210,9789395260053,Paper Back
+"                   ,,",38. இரவு (விஷ்ணுபுரம் பதிப்பகம்,-,-,-,தமிழ்,240,விஷ்ணுபுரம் பதிப்பகம்,2023,நாவல்,க்ளாசிக்ஸ்,330,-,Paper Back
+"                   ,,",39. வணங்கான்,-,-,-,தமிழ்,40,விஷ்ணுபுரம் பதிப்பகம்,2023,சிறுகதை,-,50,-,Paper Back
+Translation,40. Stories of the True (PB),-,Priyamvada,-,English,328,Juggernaut,2023,"Short Story, Translation ",-,499,9789393986658,Paper Back
+Translation,41. தல்ஸ்தோயின் கலை,-,ஜெயமோகன்,-,,-,தமிழினி,2023,வாழ்க்கை வரலாறு,-,140,-,Paper Back
+"                   ,,",42. எழுதழல் (விஷ்ணுபுரம் பதிப்பகம்),-,-,-,தமிழ்,-,விஷ்ணுபுரம் பதிப்பகம்,2023,நாவல்,இந்து மதம்,-,-,Paper Back
+"                   ,,",43. இமைக்கணம் (விஷ்ணுபுரம் பதிப்பகம்),-,-,-,தமிழ்,-,விஷ்ணுபுரம் பதிப்பகம்,2023,நாவல்,இந்து மதம்,900,-,Hardcover
+"                   ,,",44. வெண்முகில் நகரம் (விஷ்ணுபுரம் பதிப்பகம்),-,-,-,தமிழ்,-,விஷ்ணுபுரம் பதிப்பகம்,2023,நாவல்,இந்து மதம்,2200,-,Hardcover
+"                   ,,",45. பிரயாகை (விஷ்ணுபுரம் பதிப்பகம்),-,-,-,தமிழ்,-,விஷ்ணுபுரம் பதிப்பகம்,2023,நாவல்,இந்து மதம்,2200,-,Hardcover
+"                   ,,",46. வண்ணக்கடல் (விஷ்ணுபுரம் பதிப்பகம்),-,-,-,தமிழ்,-,விஷ்ணுபுரம் பதிப்பகம்,2023,நாவல்,இந்து மதம்,1700,-,Hardcover
+"                   ,,",47. ரப்பர் (விஷ்ணுபுரம் பதிப்பகம்),-,-,-,தமிழ்,-,விஷ்ணுபுரம் பதிப்பகம்,2023,நாவல்,-,290,-,Paper Back
+"                   ,,",48. உலோகம் (விஷ்ணுபுரம் பதிப்பகம்),-,-,-,தமிழ்,-,விஷ்ணுபுரம் பதிப்பகம்,2023,நாவல்,-,220,-,Paper Back
+"                   ,,",49. கன்னிநிலம் (விஷ்ணுபுரம் பதிப்பகம்),-,-,-,தமிழ்,-,விஷ்ணுபுரம் பதிப்பகம்,2023,நாவல்,-,250,-,Paper Back
+"                   ,,",50. கன்னியாகுமரி (விஷ்ணுபுரம் பதிப்பகம்,-,-,-,தமிழ்,-,விஷ்ணுபுரம் பதிப்பகம்,2023,நாவல்,-,270,-,Paper Back
+"                   ,,",51. வெண்கடல் (விஷ்ணுபுரம் பதிப்பகம்),-,-,-,தமிழ்,-,விஷ்ணுபுரம் பதிப்பகம்,2023,சிறுகதை,பிற,280,-,Paper Back
+"                   ,,",52. பேய் கதைகளும் தேவதை கதைகளும்,-,-,-,தமிழ்,-,விஷ்ணுபுரம் பதிப்பகம்,2023,சிறுகதை,-,250,-,Paper Back
+"                   ,,",53. பொன்னியின் செல்வன் விவாதங்கள்,-,-,-,தமிழ்,-,விஷ்ணுபுரம் பதிப்பகம்,2023,கட்டுரை,-,270,-,Paper Back
+"                   ,,",54. நீலம் (விஷ்ணுபுரம் பதிப்பகம்),-,-,-,தமிழ்,336,விஷ்ணுபுரம் பதிப்பகம்,2022,நாவல்,இந்து மதம்,1000,-,Hardcover
+"                   ,,",55. மழைப்பாடல் (விஷ்ணுபுரம் பதிப்பகம்),-,-,-,தமிழ்,1008,விஷ்ணுபுரம் பதிப்பகம்,2022,நாவல்,இந்து மதம்,2000,-,Hardcover
+"                   ,,",56. விஷ்ணுபுரம்,-,-,-,தமிழ்,1046,விஷ்ணுபுரம் பதிப்பகம்,2022,நாவல்,இந்து மதம்,1300,-,Hardcover
+"                   ,,",57. யானை டாக்டர் (விஷ்ணுபுரம் பதிப்பகம்),-,-,-,தமிழ்,64,விஷ்ணுபுரம் பதிப்பகம்,2022,சிறுகதை,சூழலியல்,50,-,Paper Back
+"                   ,,",58. நவீனத் தமிழிலக்கிய அறிமுகம் (விஷ்ணுபுரம் பதிப்பகம்),-,-,-,தமிழ்,376,விஷ்ணுபுரம் பதிப்பகம்,2022,கட்டுரை,இலக்கியம்,500,-,Paper Back
+"                   ,,",59. திசைகளின் நடுவே (விஷ்ணுபுரம் பதிப்பகம்),-,-,-,தமிழ்,218,விஷ்ணுபுரம் பதிப்பகம்,2022,சிறுகதை,இலக்கியம்,300,-,Paper Back
+"                   ,,",60. சிலுவையின் பெயரால் (விஷ்ணுபுரம் பதிப்பகம்),-,-,-,தமிழ்,264,விஷ்ணுபுரம் பதிப்பகம்,2022,கட்டுரை,கிறிஸ்தவம்,320,-,Paper Back
+"                   ,,",61. இந்து ஞானமரபில் ஆறு தரிசனங்கள்,-,-,-,தமிழ்,224,விஷ்ணுபுரம் பதிப்பகம்,2022,கட்டுரை,இந்து மதம்,330,-,Paper Back
+"                   ,,",62. கண்ணீரைப் பின்தொடர்தல் (விஷ்ணுபுரம் பதிப்பகம்),-,-,-,தமிழ்,256,விஷ்ணுபுரம் பதிப்பகம்,2022,கட்டுரை,-,320,-,Paper Back
+"                   ,,",63. முதற்கனல் (விஷ்ணுபுரம் பதிப்பகம்),-,-,-,தமிழ்,554,விஷ்ணுபுரம் பதிப்பகம்,2022,நாவல்,இந்து மதம்,1000,-,Hardcover
+"                   ,,",64. முதலாவிண்,-,-,-,தமிழ்,160,விஷ்ணுபுரம் பதிப்பகம்,2022,நாவல்,இந்து மதம்,350,-,Hardcover
+"                   ,,",65. கல்பொருசிறுநுரை,-,-,-,தமிழ்,848,விஷ்ணுபுரம் பதிப்பகம்,2022,நாவல்,இந்து மதம்,1300,-,Hardcover
+"                   ,,",66. துளிக்கனவு,-,-,-,தமிழ்,144,விஷ்ணுபுரம் பதிப்பகம்,2022,சிறுகதை,பிற,190,-,Paper Back
+"                   ,,",67. கூந்தல்,-,-,-,தமிழ்,144,விஷ்ணுபுரம் பதிப்பகம்,2022,சிறுகதை,பிற,190,-,Paper Back
+"                   ,,",68. அறம் (விஷ்ணுபுரம் பதிப்பகம்),-,-,-,தமிழ்,400,விஷ்ணுபுரம் பதிப்பகம்,2022,சிறுகதை,பிற,500,-,Hardcover
+"                   ,,",69. களிற்றியானை நிரை (செம்பதிப்பு),-,-,-,தமிழ்,848,விஷ்ணுபுரம் பதிப்பகம்,2022,நாவல்,இந்து மதம்,1200,-,Hardcover
+"                   ,,",70. Stories of the True (HB),-,Priyamvada,-,English,328,Juggernaut,2022,"Short Story, Translation ",Miscellaneous,799,9789393986177,Hardcover
+"                   ,,",71. விசும்பு: அறிவியல் புனைகதைகள்,-,-,-,தமிழ்,148,விஷ்ணுபுரம் பதிப்பகம்,2022,சிறுகதை,அறிவியல் புனைவு,170,-,Paper Back
+"                   ,,","72. நான்காவது கொலை
+",-,-,-,தமிழ்,130,விஷ்ணுபுரம் பதிப்பகம்,2022,கட்டுரை,பிற,160,-,Paper Back
+"                   ,,",73. அனல் காற்று,-,-,-,தமிழ்,220,விஷ்ணுபுரம் பதிப்பகம்,2022,நாவல்,பிற,260,-,Paper Back
+"                   ,,",74. கதாநாயகி,-,-,-,தமிழ்,354,விஷ்ணுபுரம் பதிப்பகம்,2022,சிறுகதை,பிற,400,-,Paper Back
+"                   ,,",75. ஈராறுகால்கொண்டெழும் புரவி,-,-,-,தமிழ்,144,விஷ்ணுபுரம் பதிப்பகம்,2022,சிறுகதை,பிற,170,-,Paper Back
+"                   ,,",76. நீர்ச்சுடர் (செம்பதிப்பு),-,-,-,தமிழ்,628,விஷ்ணுபுரம் பதிப்பகம்,2022,நாவல்,இந்து மதம்,900,-,Hardcover
+"                   ,,",77. ஞானி,-,-,-,தமிழ்,252,விஷ்ணுபுரம் பதிப்பகம்,2022,கட்டுரை,இலக்கியம்,300,-,Paper Back
+"                   ,,",78. பின்தொடரும் நிழலின் குரல் (விஷ்ணுபுரம் பதிப்பகம்),-,-,-,தமிழ்,760,விஷ்ணுபுரம் பதிப்பகம்,2022,நாவல்,மார்க்சியம்,900,-,Hardcover
+Translation,79. இயற்கையை அறிதல் (தன்னறம் நூல்வெளி),எமர்சன்,ஜெயமோகன்,-,தமிழ்,-,தன்னறம் நூல்வெளி,2022,"கட்டுரை,மொழிபெயர்ப்பு",சூழலியல்,150,-,Paper Back
+"                   ,,",80. இரு கலைஞர்கள்,-,-,-,தமிழ்,178,விஷ்ணுபுரம் பதிப்பகம்,2022,சிறுகதை,பிற,220,-,Paper Back
+"                   ,,",81. பொலிவதும் கலைவதும்,-,-,-,தமிழ்,268,விஷ்ணுபுரம் பதிப்பகம்,2022,சிறுகதை,பிற,320,-,Paper Back
+"                   ,,",82.முதுநாவல்,-,-,-,தமிழ்,280,விஷ்ணுபுரம் பதிப்பகம்,2022,சிறுகதை,பிற,330,-,Paper Back
+"                   ,,",83. மலைபூத்தபோது,-,-,-,தமிழ்,164,விஷ்ணுபுரம் பதிப்பகம்,2022,சிறுகதை,பிற,200,-,Paper Back
+"                   ,,",84. வணிக இலக்கியம்,-,-,-,தமிழ்,112,விஷ்ணுபுரம் பதிப்பகம்,2022,கட்டுரை,இலக்கியம்,130,-,Paper Back
+"                   ,,",85. ஒருபாலுறவு: சில விவாதங்கள்,-,-,-,தமிழ்,76,விஷ்ணுபுரம் பதிப்பகம்,2022,கட்டுரை,விளிம்புநிலை மக்கள்,90,-,Paper Back
+"                   ,,",86. நத்தையின் பாதை,-,-,-,தமிழ்,84,விஷ்ணுபுரம் பதிப்பகம்,2022,கட்டுரை,இலக்கியம்,100,-,Paper Back
+"                   ,,",87. ஆலயம் எவருடையது?,-,-,-,தமிழ்,134,விஷ்ணுபுரம் பதிப்பகம்,2022,கட்டுரை,இந்து மதம்,150,-,Paper Back
+"                   ,,",88. சாதி: ஓர் உரையாடல்,-,-,-,தமிழ்,188,விஷ்ணுபுரம் பதிப்பகம்,2022,கட்டுரை,இந்து மதம்,220,-,Paper Back
+"                   ,,",89. இந்து மெய்மை,-,-,-,தமிழ்,180,விஷ்ணுபுரம் பதிப்பகம்,2022,கட்டுரை,இந்து மதம்,210,-,Paper Back
+"                   ,,",90. இலக்கியத்தின் நுழைவாயிலில்,-,-,-,தமிழ்,136,விஷ்ணுபுரம் பதிப்பகம்,2022,கட்டுரை,இலக்கியம்,160,-,Paper Back
+"                   ,,",91. எழுகதிர்,-,-,-,தமிழ்,304,விஷ்ணுபுரம் பதிப்பகம்,2022,சிறுகதை,பிற,360,-,Paper Back
+"                   ,,",92. தன்னைக் கடத்தல்,-,-,-,தமிழ்,-,தன்னறம் நூல்வெளி,2022,கட்டுரை,பிற,170,-,Paper Back
+"                   ,,",93. எழுதுக,-,-,-,தமிழ்,-,தன்னறம் நூல்வெளி,2022,கட்டுரை,இலக்கியம்,180,-,Paper Back
+"                   ,,",94. தேவி (விஷ்ணுபுரம் பதிப்பகம்),-,-,-,தமிழ்,286,விஷ்ணுபுரம் பதிப்பகம்,2022,சிறுகதை,பிற,320,-,Paper Back
+"                   ,,","95.  ஐந்து நெருப்பு
+",-,-,-,தமிழ்,256,விஷ்ணுபுரம் பதிப்பகம்,2022,சிறுகதை,பிற,280,-,Paper Back
+"                   ,,",96. ஆனையில்லா,-,-,-,தமிழ்,320,விஷ்ணுபுரம் பதிப்பகம்,2021,சிறுகதை,பிற,370,-,Paper Back
+"                   ,,",97. அந்த முகில் இந்த முகில்,-,-,-,தமிழ்,200,விஷ்ணுபுரம் பதிப்பகம்,2021,நாவல்,பிற,240,-,Paper Back
+"                   ,,",98. வாசிப்பின் வழிகள்,-,-,-,தமிழ்,172,விஷ்ணுபுரம் பதிப்பகம்,2021,கட்டுரை,இலக்கியம்,210,-,Paper Back
+"                   ,,
